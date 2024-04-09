@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace HellDiver2_API2DB.Migrations
+namespace HD2_EFDatabase.Migrations
 {
     [DbContext(typeof(DB_Context))]
     partial class DB_ContextModelSnapshot : ModelSnapshot
@@ -83,13 +83,13 @@ namespace HellDiver2_API2DB.Migrations
                     b.Property<DateTime>("DataEntryTimeUTC")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("FK_Events_ID")
+                    b.Property<long?>("FK_Events_ID")
                         .HasColumnType("bigint");
 
                     b.Property<long>("FK_Position_ID")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("FK_Stats_ID")
+                    b.Property<long?>("FK_Stats_ID")
                         .HasColumnType("bigint");
 
                     b.Property<string>("currentOwner")
@@ -226,7 +226,7 @@ namespace HellDiver2_API2DB.Migrations
                     b.Property<DateTime>("DataEntryTimeUTC")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("FK_Stats_ID")
+                    b.Property<long?>("FK_Stats_ID")
                         .HasColumnType("bigint");
 
                     b.Property<string>("clientVersion")
@@ -350,8 +350,9 @@ namespace HellDiver2_API2DB.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("id")
-                        .HasColumnType("int");
+                    b.Property<string>("id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("publishedAt")
                         .HasColumnType("datetime2");
@@ -419,22 +420,20 @@ namespace HellDiver2_API2DB.Migrations
 
             modelBuilder.Entity("HellDiver2_API2DB.V1_Objects.Campaign2", b =>
                 {
-                    b.HasOne("HellDiver2_API2DB.V1_Objects.Planet", "campaignPlanet")
+                    b.HasOne("HellDiver2_API2DB.V1_Objects.Planet", "planet")
                         .WithMany()
                         .HasForeignKey("FK_Planet_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("campaignPlanet");
+                    b.Navigation("planet");
                 });
 
             modelBuilder.Entity("HellDiver2_API2DB.V1_Objects.Planet", b =>
                 {
                     b.HasOne("HellDiver2_API2DB.V1_Objects.eventData", "events")
                         .WithMany()
-                        .HasForeignKey("FK_Events_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FK_Events_ID");
 
                     b.HasOne("HellDiver2_API2DB.V1_Objects.xyPosition", "position")
                         .WithMany()
@@ -444,9 +443,7 @@ namespace HellDiver2_API2DB.Migrations
 
                     b.HasOne("HellDiver2_API2DB.V1_Objects.Statistics", "statistics")
                         .WithMany()
-                        .HasForeignKey("FK_Stats_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FK_Stats_ID");
 
                     b.Navigation("events");
 
@@ -459,9 +456,7 @@ namespace HellDiver2_API2DB.Migrations
                 {
                     b.HasOne("HellDiver2_API2DB.V1_Objects.Statistics", "statistics")
                         .WithMany()
-                        .HasForeignKey("FK_Stats_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FK_Stats_ID");
 
                     b.Navigation("statistics");
                 });

@@ -59,9 +59,9 @@ namespace HellDiver2_API2DB {
             } else if (input.Contains(',')) {
                 vals = input.Split(',');
             }
-            int[] valint = new int[vals.Length];
+            long[] valint = new long[vals.Length];
             for (int i = 0; i < vals.Length; i++) {
-                valint[i] = int.Parse(vals[i]);
+                valint[i] = long.Parse(vals[i]);
             }
             return EntFramework.DB_Logic.GetDatabaseItems<T>(valint);
         }

@@ -4,7 +4,7 @@ namespace HellDiver2_API2DB.V1_Objects {
     internal class Campaign2 : Database_Record {
         public required int id { get; set; }                    //Provided by API
         [ForeignKey("FK_Planet_ID")]
-        public required Planet campaignPlanet { get; set; }
+        public required Planet planet { get; set; }
         public long FK_Planet_ID { get; set; }
         public required int type { get; set; }
         public required int count { get; set; }
@@ -18,7 +18,7 @@ namespace HellDiver2_API2DB.V1_Objects {
             }
             if(
                 id == data.id
-            &&  campaignPlanet == data.campaignPlanet
+            &&  planet == data.planet
             &&  FK_Planet_ID == data.FK_Planet_ID
             && type == data.type
             && count == data.count

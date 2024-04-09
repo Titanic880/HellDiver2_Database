@@ -11,7 +11,7 @@ namespace HellDiver2_API2DB.V1_Objects {
         public required double impactMultiplier { get; set; }
         [ForeignKey("FK_Stats_ID")]
         public required Statistics statistics { get; set; }
-        public long FK_Stats_ID { get; set; }
+        public long? FK_Stats_ID { get; set; }
         public const bool CanIndex = false;
         public const string apiEndpoint = "/api/v1/war";
 
@@ -24,7 +24,6 @@ namespace HellDiver2_API2DB.V1_Objects {
             && ended == data.ended
             && now == data.now
             && clientVersion == data.clientVersion
-            && factions == data.factions
             && impactMultiplier == data.impactMultiplier
             && statistics == data.statistics
             ) {

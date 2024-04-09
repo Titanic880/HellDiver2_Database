@@ -2,7 +2,7 @@
 
 namespace HellDiver2_API2DB.V1_Objects {
     internal class steamData : Database_Record {
-        public required int id { get; set; }                //Provided by API
+        public required string id { get; set; }                //Provided by API
         public required string title { get; set; }
         public required string url { get; set; }
         public required string author { get; set; }

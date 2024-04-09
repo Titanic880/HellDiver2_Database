@@ -1,35 +1,17 @@
 ﻿using HellDiver2_API2DB.raw_Objects;
 using HellDiver2_API2DB.V1_Objects;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace HellDiver2_API2DB.EntFramework {
     internal static class DB_Logic {
         #region GetData
-        public static T[] GetDatabaseItems<T>(int[] indexes) {
+        public static T[] GetDatabaseItems<T>(long[] indexes) {
             using DB_Context dB_Context = new();
-            object? result = dB_Context.Find(typeof(T),indexes);
-            if (result is null) {
-                return [];
-            } else if (result is T[] v) {
-                return v;
+            List<T> res = [];
+            for (int i = 0; i < indexes.Length; i++) {
+                res.Add((T)dB_Context.Find(typeof(T), indexes[i])!);
             }
-            throw new Exception($"Type Fail: Expected: {typeof(T).Name}, recieved: {result.GetType().Name}");
-        }
-        public static PlanetStatus[] GetStatuses(int[] indexes) {
-            return GetDatabaseItems<PlanetStatus>(indexes);
-        }
-        public static planetAttacks[] GetplanetAttacks(int[] indexes) {
-            return GetDatabaseItems<planetAttacks>(indexes);
-        }
-        public static Campaign[] GetCampaigns(int[] indexes) {
-            return GetDatabaseItems<Campaign>(indexes);
-        }
-        public static JointOperation[] GetJointOperations(int[] indexes) {
-            return GetDatabaseItems<JointOperation>(indexes);
-        }
-        public static eventData[] GetEvents(int[] indexes) {
-            return GetDatabaseItems<eventData>(indexes);
-        }
+            return [.. res];
+        } 
         #endregion GetData
         #region AddToDatabase
         public static bool AddAssignmentData(assignmentData[] Data) {
@@ -41,62 +23,101 @@ namespace HellDiver2_API2DB.EntFramework {
                 ];
 
             bool ret = false;
-            for(int i = 0; i < Data.Length; i++) {
-               assignmentData? data = cont.assignmentDatas.Where(x => !x.Equals(Data[i])).FirstOrDefault();
-                if(data == null) {
-                    Data[i].PK_id = keys[0];
-                    taskData[] vals = [.. Data[i].tasks];
-                    for(int x = 0; x < vals.Length; x++) {
-                        vals[x].PK_id = keys[1];
-                        keys[1]++;
-                    }
-                    Data[i].tasks = vals;
-                    Data[i].reward.PK_id = keys[2];
-                    cont.assignmentDatas.Add(Data[i]);
-                    ret = true;
-                    keys[0]++;
-                    //keys[1] is updated during assignment
-                    keys[2]++;
+            for (int i = 0; i < Data.Length; i++) {
+                assignmentData? data = cont.assignmentDatas.Where(x => !x.Equals(Data[i])).FirstOrDefault();
+                if (data != null) {
+                    continue;
                 }
+
+                Data[i].PK_id = keys[0];
+                taskData[] vals = [.. Data[i].tasks];
+                for (int x = 0; x < vals.Length; x++) {
+                    vals[x].PK_id = keys[1];
+                    keys[1]++;
+                }
+                Data[i].tasks = vals;
+                Data[i].reward.PK_id = keys[2];
+                cont.assignmentDatas.Add(Data[i]);
+                ret = true;
+                keys[0]++;
+                //keys[1] is updated during assignment
+                keys[2]++;
             }
             cont.SaveChanges();
             return ret;
         }
         public static bool AddCampaign2(Campaign2[] Data) {
             using DB_Context cont = new();
+            long[] keys = [
+                GetNextCampaign2Key(),
+                GetNextPlanetKey(),
+                GetNextpositionKey(),
+                GetNexteventDataKey(),
+                GetNextStatsKey()
+                ];
+
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
                 Campaign2? data = cont.campaign2s.Where(x => !x.Equals(Data[i])).FirstOrDefault();
-                if (data == null) {
-                    cont.campaign2s.Add(Data[i]);
-                    ret = true;
+                if(data != null) {
+                    continue;
                 }
+                Data[i].PK_id = keys[0];
+                Data[i].planet.PK_id = keys[1];
+                Data[i].planet.position.PK_id= keys[2];
+
+                if (Data[i].planet.events != null) {
+                    Data[i].planet.events!.PK_id = keys[3];
+                    keys[3]++;
+                } else {
+                    Data[i].planet.FK_Events_ID = null;
+                }
+                if (Data[i].planet.statistics != null) {
+                    Data[i].planet.statistics!.PK_id = keys[4];
+                    keys[4]++;
+                } else {
+                    Data[i].planet.FK_Stats_ID = null;
+                }
+                cont.campaign2s.Add(Data[i]);
+                ret = true;
+
+                keys[0]++;
+                keys[1]++;
+                keys[2]++;
             }
             cont.SaveChanges();
             return ret;
         }
         public static bool AddDispatch(Dispatch[] Data) {
             using DB_Context cont = new();
+            long Key = GetNextDispatchKey();
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
                 Dispatch? data = cont.dispatches.Where(x => !x.Equals(Data[i])).FirstOrDefault();
-                if (data == null) {
-                    cont.dispatches.Add(Data[i]);
-                    ret = true;
+                if (data != null) {
+                    continue;
                 }
+                Data[i].PK_id = Key;
+                cont.dispatches.Add(Data[i]);
+                ret = true;
+                Key++;
             }
             cont.SaveChanges();
             return ret;
         }
         public static bool AddEventData(eventData[] Data) {
             using DB_Context cont = new();
+            long Key = GetNexteventDataKey();
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
                 eventData? data = cont.eventDatas.Where(x => !x.Equals(Data[i])).FirstOrDefault();
                 if (data == null) {
-                    cont.eventDatas.Add(Data[i]);
-                    ret = true;
+                    continue;
                 }
+                Data[i].PK_id = Key;
+                cont.eventDatas.Add(Data[i]);
+                ret = true;
+                Key++;
             }
             cont.SaveChanges();
             return ret;
@@ -140,36 +161,61 @@ namespace HellDiver2_API2DB.EntFramework {
             cont.SaveChanges();
             return ret;
         }
-
-
-
         public static bool AddsteamData(steamData[] Data) {
             using DB_Context cont = new();
+            long Key = GetNextsteamDataKey();
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
                 steamData? data = cont.steamDatas.Where(x => !x.Equals(Data[i])).FirstOrDefault();
-                if (data == null) {
-                    cont.steamDatas.Add(Data[i]);
-                    ret = true;
+                if (data != null) {
+                    continue;
                 }
+                Data[i].PK_id = Key;
+                cont.steamDatas.Add(Data[i]);
+                ret = true;
+                Key++;
             }
             cont.SaveChanges();
             return ret;
         }
-        public static bool AddWarInfo(WarInfo[] Data) {
+        public static bool AddWarInfo(WarInfo Data) {
             using DB_Context cont = new();
+            long[] Keys = [
+                GetNextWarInfoKey(),
+                GetNextStatsKey()
+                ];
             bool ret = false;
-            for (int i = 0; i < Data.Length; i++) {
-                WarInfo? data = cont.warInfos.Where(x => !x.Equals(Data[i])).FirstOrDefault();
-                if (data == null) {
-                    cont.warInfos.Add(Data[i]);
-                    ret = true;
-                }
+            WarInfo? data = cont.warInfos.Where(x => !x.Equals(Data)).FirstOrDefault();
+            if (data != null) {
+                return false;
             }
+            Data.PK_id = Keys[0];
+            if (Data.statistics != null) {
+                Data.statistics!.PK_id = Keys[1];
+                Keys[1]++;
+            } else {
+                Data.FK_Stats_ID = null;
+            }
+
+            cont.warInfos.Add(Data);
+            ret = true;
+            Keys[0]++;
+
             cont.SaveChanges();
             return ret;
         }
         #endregion AddToDatabase
+        #region UpdateDatabase
+
+        public static void UpdatePlanet(long toUpdateID,Planet NewPlanet) {
+            using DB_Context cont = new();
+            NewPlanet.PK_id = toUpdateID;
+            Planet update = cont.planets.Where(x=>x.PK_id == toUpdateID).First();
+            update = NewPlanet;
+            cont.SaveChanges();
+        }
+        #endregion UpdateDatabase
+
         #region KeyValues
         private static long GetNextassignmentKey() {
             using DB_Context cont = new();
@@ -206,6 +252,13 @@ namespace HellDiver2_API2DB.EntFramework {
             }
             return cont.dispatches.OrderBy(x => x.PK_id).Last().PK_id + 1;
         }
+        private static long GetNextsteamDataKey() {
+            using DB_Context cont = new();
+            if (!cont.steamDatas.Any()) {
+                return 0;
+            }
+            return cont.steamDatas.OrderBy(x => x.PK_id).Last().PK_id + 1;
+        }
         private static long GetNexteventDataKey() {
             using DB_Context cont = new();
             if (!cont.eventDatas.Any()) {
@@ -228,6 +281,13 @@ namespace HellDiver2_API2DB.EntFramework {
             return cont.planets.OrderBy(x=>x.PK_id).Last().PK_id + 1;
         }
         private static long GetNextpositionKey() {
+            using DB_Context cont = new();
+            if (!cont.xyPositions.Any()) {
+                return 0;
+            }
+            return cont.xyPositions.OrderBy(x => x.PK_id).Last().PK_id + 1;
+        }
+        private static long GetNextWarInfoKey() {
             using DB_Context cont = new();
             if (!cont.xyPositions.Any()) {
                 return 0;
