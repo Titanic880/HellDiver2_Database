@@ -24,7 +24,7 @@ namespace HellDiver2_API2DB.EntFramework {
 
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
-                assignmentData? data = cont.assignmentDatas.Where(x => !x.Equals(Data[i])).FirstOrDefault();
+                assignmentData? data = cont.assignmentDatas.Where(x => x.Equals(Data[i])).FirstOrDefault();
                 if (data != null) {
                     continue;
                 }
@@ -58,7 +58,7 @@ namespace HellDiver2_API2DB.EntFramework {
 
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
-                Campaign2? data = cont.campaign2s.Where(x => !x.Equals(Data[i])).FirstOrDefault();
+                Campaign2? data = cont.campaign2s.Where(x => x.Equals(Data[i])).FirstOrDefault();
                 if(data != null) {
                     continue;
                 }
@@ -93,7 +93,7 @@ namespace HellDiver2_API2DB.EntFramework {
             long Key = GetNextDispatchKey();
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
-                Dispatch? data = cont.dispatches.Where(x => !x.Equals(Data[i])).FirstOrDefault();
+                Dispatch? data = cont.dispatches.Where(x => x.Equals(Data[i])).FirstOrDefault();
                 if (data != null) {
                     continue;
                 }
@@ -133,30 +133,37 @@ namespace HellDiver2_API2DB.EntFramework {
 
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
-                Planet? data = cont.planets.Where(x => !x.Equals(Data[i])).FirstOrDefault();
-                if (data == null) {
-                    Data[i].PK_id = keys[0];
-                    Data[i].position.PK_id = keys[1];
-                    if (Data[i].events != null) {
-                        Data[i].events!.PK_id = keys[2];
-                        keys[2]++;
-                    }else {
-                        Data[i].FK_Events_ID = null;
-                    }
-                    if (Data[i].statistics != null) {
-                        Data[i].statistics!.PK_id = keys[3];
-                        keys[3]++;
-                    } else {
-                        Data[i].FK_Stats_ID = null;
-                    }
-                    cont.planets.Add(Data[i]);
-
-                    keys[0]++;
-                    keys[1]++;
-                    //keys[2] is updated during assignment
-                    //keys[3] is updated during assignment
-                    ret = true;
+                Planet? data = cont.planets.Where(x => x.index == Data[i].index).FirstOrDefault();
+                if (Data[i].index == 170) {
+                    string debug = "";
+                    debug += "1";
                 }
+                if (data != null) {
+                    if (data.Equals(Data[i])) {
+                        continue;
+                    }
+                }
+                Data[i].PK_id = keys[0];
+                Data[i].position.PK_id = keys[1];
+                if (Data[i].events != null) {
+                    Data[i].events!.PK_id = keys[2];
+                    keys[2]++;
+                } else {
+                    Data[i].FK_Events_ID = null;
+                }
+                if (Data[i].statistics != null) {
+                    Data[i].statistics!.PK_id = keys[3];
+                    keys[3]++;
+                } else {
+                    Data[i].FK_Stats_ID = null;
+                }
+                cont.planets.Add(Data[i]);
+
+                keys[0]++;
+                keys[1]++;
+                //keys[2] is updated during assignment
+                //keys[3] is updated during assignment
+                ret = true;
             }
             cont.SaveChanges();
             return ret;
@@ -166,7 +173,7 @@ namespace HellDiver2_API2DB.EntFramework {
             long Key = GetNextsteamDataKey();
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
-                steamData? data = cont.steamDatas.Where(x => !x.Equals(Data[i])).FirstOrDefault();
+                steamData? data = cont.steamDatas.Where(x => x.Equals(Data[i])).FirstOrDefault();
                 if (data != null) {
                     continue;
                 }
@@ -184,8 +191,9 @@ namespace HellDiver2_API2DB.EntFramework {
                 GetNextWarInfoKey(),
                 GetNextStatsKey()
                 ];
+
             bool ret = false;
-            WarInfo? data = cont.warInfos.Where(x => !x.Equals(Data)).FirstOrDefault();
+            WarInfo? data = cont.warInfos.Where(x => x.Equals(Data)).FirstOrDefault();
             if (data != null) {
                 return false;
             }
@@ -289,10 +297,10 @@ namespace HellDiver2_API2DB.EntFramework {
         }
         private static long GetNextWarInfoKey() {
             using DB_Context cont = new();
-            if (!cont.xyPositions.Any()) {
+            if (!cont.warInfos.Any()) {
                 return 0;
             }
-            return cont.xyPositions.OrderBy(x => x.PK_id).Last().PK_id + 1;
+            return cont.warInfos.OrderBy(x => x.PK_id).Last().PK_id + 1;
         }
         #endregion KeyValues
 
