@@ -27,8 +27,6 @@ namespace HellDiver2_API2DB.V1_Objects {
             && title == data.title
             && briefing == data.briefing
             && description == data.description
-            && tasks == data.tasks
-            && reward == data.reward
             ) {
                 return true;
             }
