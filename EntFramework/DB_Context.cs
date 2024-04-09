@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using HellDiver2_API2DB.V1_Objects;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Data.SqlClient;
-using System.ComponentModel;
-using System.Reflection;
-
 
 namespace HellDiver2_API2DB.EntFramework {
     internal class DB_Context : DbContext {
@@ -22,8 +17,12 @@ namespace HellDiver2_API2DB.EntFramework {
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder options) {
+            Config Sys = Program.GetConfig()!;
+            if (Sys == new Config()) {
+                throw new Exception("Default config found.");
+            }
             options.EnableSensitiveDataLogging();
-            options.UseSqlServer($"Server={Program.UserConfig!.SQL_IP};Database={Program.UserConfig!.SQL_DB};User Id={Program.UserConfig!.SQL_ID};Password={Program.UserConfig!.SQL_PW};TrustServerCertificate=true");
+            options.UseSqlServer($"Server={Sys.SQL_IP};Database={Sys.SQL_DB};User Id={Sys.SQL_ID};Password={Sys.SQL_PW};TrustServerCertificate=true");
         }
 }
 }

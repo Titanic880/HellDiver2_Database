@@ -7,9 +7,10 @@ namespace HellDiver2_API2DB {
         public static Config? UserConfig { get; private set; } = GetConfig();
         static void Main() {
             while (UserConfig == null || UserConfig == new Config()) {
-                Console.WriteLine("Empty config has been generated, populate the data before continuing...");
+                Console.WriteLine($"Empty config has been generated at: {Directory.GetCurrentDirectory()}/Config.json, populate the data before continuing...");
                 Console.ReadLine();
                 Thread.Sleep(10000);
+                UserConfig = GetConfig();
             }
             //Main Update Loop
             while (true) {
@@ -25,7 +26,7 @@ namespace HellDiver2_API2DB {
             }
         }
 
-        private static Config? GetConfig() {
+        internal static Config? GetConfig() {
             if (File.Exists("Config.json")) {
                 Config? ret = JsonConvert.DeserializeObject<Config>(File.ReadAllText("Config.json"));
                 if (ret == null) {
