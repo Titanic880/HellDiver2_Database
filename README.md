@@ -11,6 +11,6 @@ Discord Username (used in header as a blame)
 
 `dotnet ef database update` to push the EF migrations to your selected database 
 (This generates all tables and information required for the database to work)
-> [!WARING]
+> [!WARNING]
 > This Currently needs you to manually enter information into `EntFramework/DB_Context.cs -> OnConfiguring()` to properly build the database.
 
