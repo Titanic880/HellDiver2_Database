@@ -1,0 +1,35 @@
+﻿using System.Threading.Tasks;
+
+namespace HellDiver2_API2DB.V1_Objects {
+    internal class steamData : Database_Record {
+        public required int id { get; set; }                //Provided by API
+        public required string title { get; set; }
+        public required string url { get; set; }
+        public required string author { get; set; }
+        public required string content { get; set; }
+        public required DateTime publishedAt { get; set; }
+
+        public const bool CanIndex = true;
+        public const string apiEndpoint = "/api/v1/steam";
+        public override bool Equals(object? obj) {
+            if (obj is not steamData data) {
+                return false;
+            }
+            if (
+               id == data.id
+            && title == data.title
+            && url == data.url
+            && author == data.author
+            && content == data.content
+            && publishedAt == data.publishedAt
+            ) {
+                return true;
+            }
+            return false;
+        }
+
+        public override int GetHashCode() {
+            return base.GetHashCode();
+        }
+    }
+}
