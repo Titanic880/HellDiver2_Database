@@ -8,7 +8,7 @@
         internal static string CallAPI(string uriEndpoint) {
             if (CallsLeft == 0) {
                 Console.WriteLine($"[{DateTime.UtcNow}] Sleeping for {API_SleepTime} seconds");
-                System.Threading.Thread.Sleep(API_SleepTime * 1000);
+                Thread.Sleep(API_SleepTime * 1000);
                 CallsLeft += 1;
                 return CallAPI(uriEndpoint);
             }
@@ -19,7 +19,7 @@
             var res = client.GetAsync(uriEndpoint).Result;
             CallsLeft = int.Parse(res.Headers.GetValues("x-ratelimit-remaining").First());
             if(CallsLeft == 0) {
-                NextCallThres.AddSeconds(10*1000);
+                NextCallThres = NextCallThres.AddSeconds(10000);
             }
 
             if (res.StatusCode == System.Net.HttpStatusCode.NotFound) {
@@ -27,7 +27,7 @@
             } else if (res.StatusCode == System.Net.HttpStatusCode.TooManyRequests) {
                 _ = int.TryParse(res.Headers.GetValues("Retry-After").First(), out int wait);
                 Console.WriteLine($"[{DateTime.UtcNow}] 429: Sleeping for {wait} seconds");
-                System.Threading.Thread.Sleep(wait * 1000);
+                Thread.Sleep(wait * 1000);
                 CallsLeft += 1;
                 return CallAPI(uriEndpoint);
             }

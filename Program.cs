@@ -6,10 +6,10 @@ namespace HellDiver2_API2DB {
     internal class Program {
         public static Config? UserConfig { get; private set; } = GetConfig();
         static void Main() {
-            if (UserConfig == null) {
+            while (UserConfig == null || UserConfig == new Config()) {
                 Console.WriteLine("Empty config has been generated, populate the data before continuing...");
                 Console.ReadLine();
-                return;
+                Thread.Sleep(10000);
             }
             //Main Update Loop
             while (true) {

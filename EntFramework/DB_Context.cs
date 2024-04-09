@@ -23,8 +23,7 @@ namespace HellDiver2_API2DB.EntFramework {
 
         protected override void OnConfiguring(DbContextOptionsBuilder options) {
             options.EnableSensitiveDataLogging();
-            options.UseSqlServer($"Server=127.0.0.1;Database=APIDBProj;User Id=sa;Password=SQLTestServer01!;TrustServerCertificate=true");
-            //options.UseSqlServer($"Server={Program.UserConfig!.SQL_IP};Database={Program.UserConfig!.SQL_DB};User Id={Program.UserConfig!.SQL_ID};Password={Program.UserConfig!.SQL_PW};TrustServerCertificate=true");
+            options.UseSqlServer($"Server={Program.UserConfig!.SQL_IP};Database={Program.UserConfig!.SQL_DB};User Id={Program.UserConfig!.SQL_ID};Password={Program.UserConfig!.SQL_PW};TrustServerCertificate=true");
         }
 }
 }

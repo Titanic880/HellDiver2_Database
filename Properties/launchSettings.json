@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "HD2_EFDatabase": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
