@@ -1,4 +1,4 @@
-###Setup
+### Setup
 project is tested and run against `https://hub.docker.com/_/microsoft-mssql-server` SQL Server and
 utilizes the `https://github.com/helldivers-2/api` community API to interface with AHGS servers.
 
