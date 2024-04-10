@@ -16,9 +16,18 @@
                 BaseAddress = new Uri(Program.UserConfig!.API_Endpoint)
             };
             client.DefaultRequestHeaders.Add("X-Application-Contact", Program.UserConfig!.API_Contact);
-            var res = client.GetAsync(uriEndpoint).Result;
+            HttpResponseMessage? res;
+            try {
+                res = client.GetAsync(uriEndpoint).Result;
+            } catch (Exception e) { 
+                Console.WriteLine($"[{DateTime.UtcNow}] Exception caught in API: {e}");
+                Console.WriteLine("Retry will occour in 10 minutes...");
+                Thread.Sleep(600000);
+                return CallAPI(uriEndpoint);
+            }
+
             CallsLeft = int.Parse(res.Headers.GetValues("x-ratelimit-remaining").First());
-            if(CallsLeft == 0) {
+            if (CallsLeft == 0) {
                 NextCallThres = NextCallThres.AddSeconds(10000);
             }
 
