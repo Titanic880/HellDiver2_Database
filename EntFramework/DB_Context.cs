@@ -24,5 +24,5 @@ namespace HellDiver2_API2DB.EntFramework {
             options.EnableSensitiveDataLogging();
             options.UseSqlServer($"Server={Sys.SQL_IP};Database={Sys.SQL_DB};User Id={Sys.SQL_ID};Password={Sys.SQL_PW};TrustServerCertificate=true");
         }
-}
+    }
 }

@@ -5,6 +5,9 @@ namespace HellDiver2_API2DB.EntFramework {
         #region AddToDatabase
         public static bool AddAssignmentData(assignmentData[] Data) {
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return false;
+            }
             long[] keys = [
                 GetNextassignmentKey(),
                 GetNextTaskDataKey(),
@@ -39,6 +42,9 @@ namespace HellDiver2_API2DB.EntFramework {
         }
         public static bool AddCampaign2(Campaign2[] Data) {
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return false;
+            }
             long[] keys = [
                 GetNextCampaign2Key(),
                 GetNextPlanetKey(),
@@ -81,6 +87,9 @@ namespace HellDiver2_API2DB.EntFramework {
         }
         public static bool AddDispatch(Dispatch[] Data) {
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return false;
+            }
             long Key = GetNextDispatchKey();
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
@@ -98,6 +107,9 @@ namespace HellDiver2_API2DB.EntFramework {
         }
         public static bool AddEventData(eventData[] Data) {
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return false;
+            }
             long Key = GetNexteventDataKey();
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
@@ -117,6 +129,9 @@ namespace HellDiver2_API2DB.EntFramework {
         }
         public static bool AddPlanets(Planet[] Data){
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return false;
+            }
             long[] keys = [
                 GetNextPlanetKey(),
                 GetNextpositionKey(),
@@ -160,6 +175,9 @@ namespace HellDiver2_API2DB.EntFramework {
         }
         public static bool AddsteamData(steamData[] Data) {
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return false;
+            }
             long Key = GetNextsteamDataKey();
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
@@ -179,6 +197,9 @@ namespace HellDiver2_API2DB.EntFramework {
         }
         public static bool AddWarInfo(WarInfo Data) {
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return false;
+            }
             long[] Keys = [
                 GetNextWarInfoKey(),
                 GetNextStatsKey()
@@ -204,6 +225,9 @@ namespace HellDiver2_API2DB.EntFramework {
         #region UpdateDatabase
         public static void UpdatePlanet(long toUpdateID,Planet NewPlanet) {
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return;
+            }
             NewPlanet.PK_id = toUpdateID;
             Planet update = cont.planets.Where(x=>x.PK_id == toUpdateID).First();
             update = NewPlanet;
@@ -213,6 +237,9 @@ namespace HellDiver2_API2DB.EntFramework {
         #region KeyValues
         private static long GetNextassignmentKey() {
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return -1;
+            }
             if (!cont.assignmentDatas.Any()) {
                 return 0;
             }
@@ -220,6 +247,9 @@ namespace HellDiver2_API2DB.EntFramework {
         }
         private static long GetNextTaskDataKey() {
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return -1;
+            }
             if (!cont.taskDatas.Any()) {
                 return 0;
             }
@@ -227,6 +257,9 @@ namespace HellDiver2_API2DB.EntFramework {
         }
         private static long GetNextRewardKey() {
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return -1;
+            }
             if (!cont.rewards.Any()) {
                 return 0;
             }
@@ -234,6 +267,9 @@ namespace HellDiver2_API2DB.EntFramework {
         }
         private static long GetNextCampaign2Key() {
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return -1;
+            }
             if (!cont.campaign2s.Any()) {
                 return 0;
             }
@@ -241,6 +277,9 @@ namespace HellDiver2_API2DB.EntFramework {
         }
         private static long GetNextDispatchKey() {
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return -1;
+            }
             if (!cont.dispatches.Any()) {
                 return 0;
             }
@@ -248,6 +287,9 @@ namespace HellDiver2_API2DB.EntFramework {
         }
         private static long GetNextsteamDataKey() {
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return -1;
+            }
             if (!cont.steamDatas.Any()) {
                 return 0;
             }
@@ -255,6 +297,9 @@ namespace HellDiver2_API2DB.EntFramework {
         }
         private static long GetNexteventDataKey() {
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return -1;
+            }
             if (!cont.eventDatas.Any()) {
                 return 0;
             }
@@ -262,6 +307,9 @@ namespace HellDiver2_API2DB.EntFramework {
         }
         private static long GetNextStatsKey() {
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return -1;
+            }
             if (!cont.statistics.Any()) {
                 return 0;
             }
@@ -269,13 +317,19 @@ namespace HellDiver2_API2DB.EntFramework {
         }
         private static long GetNextPlanetKey() {
             using DB_Context cont = new();
-            if(!cont.planets.Any()) {
+            if (!cont.Database.CanConnect()) {
+                return -1;
+            }
+            if (!cont.planets.Any()) {
                 return 0;
             }
             return cont.planets.OrderBy(x=>x.PK_id).Last().PK_id + 1;
         }
         private static long GetNextpositionKey() {
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return -1;
+            }
             if (!cont.xyPositions.Any()) {
                 return 0;
             }
@@ -283,6 +337,9 @@ namespace HellDiver2_API2DB.EntFramework {
         }
         private static long GetNextWarInfoKey() {
             using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+                return -1;
+            }
             if (!cont.warInfos.Any()) {
                 return 0;
             }
