@@ -2,16 +2,6 @@
 
 namespace HellDiver2_API2DB.EntFramework {
     internal static class DB_Logic {
-        #region GetData
-        public static T[] GetDatabaseItems<T>(long[] indexes) {
-            using DB_Context dB_Context = new();
-            List<T> res = [];
-            for (int i = 0; i < indexes.Length; i++) {
-                res.Add((T)dB_Context.Find(typeof(T), indexes[i])!);
-            }
-            return [.. res];
-        } 
-        #endregion GetData
         #region AddToDatabase
         public static bool AddAssignmentData(assignmentData[] Data) {
             using DB_Context cont = new();
