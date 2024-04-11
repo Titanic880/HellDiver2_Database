@@ -282,7 +282,6 @@ namespace HD2_EFDatabase.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("progress")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("title")

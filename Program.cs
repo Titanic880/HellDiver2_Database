@@ -39,7 +39,7 @@ namespace HellDiver2_API2DB {
                 return ret;
             } else {
                 File.Create("Config.json").Close();
-                File.WriteAllText("Config.json", JsonConvert.SerializeObject(new Config()));
+                File.WriteAllText("Config.json", JsonConvert.SerializeObject(new Config(),Formatting.Indented));
                 return null;
             }
         }
