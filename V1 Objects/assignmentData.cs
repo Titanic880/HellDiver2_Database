@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace HellDiver2_API2DB.V1_Objects {
     internal class assignmentData : Database_Record {
         public required Int64 id { get; set; }            //Provided by API
+        public required int[] progress { get; set; }
         public required string title { get; set; }
         public required string briefing { get; set; }
         public required string description { get; set; }
