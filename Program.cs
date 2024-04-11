@@ -14,9 +14,8 @@ namespace HellDiver2_API2DB {
             }
             //Main Update Loop
             while (true) {
-                Console.WriteLine($"New Planets: {DB_Logic.AddPlanets(JsonConvert.DeserializeObject<Planet[]>(API.CallAPI(Planet.apiEndpoint))!)}");
-                
                 Console.WriteLine($"[{DateTime.UtcNow}] New Assignments: {DB_Logic.AddAssignmentData(JsonConvert.DeserializeObject<assignmentData[]>(API.CallAPI(assignmentData.apiEndpoint))!)}");
+                Console.WriteLine($"New Planets: {DB_Logic.AddPlanets(JsonConvert.DeserializeObject<Planet[]>(API.CallAPI(Planet.apiEndpoint))!)}");
                 Console.WriteLine($"[{DateTime.UtcNow}] New Campaigns: {DB_Logic.AddCampaign2(JsonConvert.DeserializeObject<Campaign2[]>(API.CallAPI(Campaign2.apiEndpoint))!)}");
                 Console.WriteLine($"[{DateTime.UtcNow}] New Dispatches: {DB_Logic.AddDispatch(JsonConvert.DeserializeObject<Dispatch[]>(API.CallAPI(Dispatch.apiEndpoint))!)}");
                 Console.WriteLine($"[{DateTime.UtcNow}] New steamData: {DB_Logic.AddsteamData(JsonConvert.DeserializeObject<steamData[]>(API.CallAPI(steamData.apiEndpoint))!)}");
