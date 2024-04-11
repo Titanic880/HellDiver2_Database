@@ -12,7 +12,7 @@
         public string SQL_PW = "PASSWORD";
         public bool DefaultVal() {
             if(
-                API_Contact == "YOUR DISCORD HERE" ||
+                API_Contact == new Config().API_Contact ||
                 API_Contact == "" ||
                 SQL_IP == "" ||
                 SQL_DB == "" ||
