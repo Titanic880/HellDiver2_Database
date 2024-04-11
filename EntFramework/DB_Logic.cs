@@ -181,7 +181,7 @@ namespace HellDiver2_API2DB.EntFramework {
             long Key = GetNextsteamDataKey();
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
-                steamData? data = cont.steamDatas.Where(x => x.id == x.id).OrderBy(x=>x.PK_id).Last();
+                steamData? data = cont.steamDatas.Where(x => x.id == Data[i].id).OrderBy(x=>x.PK_id).Last();
                 if (data != null) {
                     if (data.Equals(Data[i])) {
                         continue;
