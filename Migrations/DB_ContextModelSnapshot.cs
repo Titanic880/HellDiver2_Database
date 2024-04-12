@@ -278,10 +278,14 @@ namespace HD2_EFDatabase.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("expiration")
+                        .HasColumnType("datetime2");
+
                     b.Property<long>("id")
                         .HasColumnType("bigint");
 
                     b.Property<string>("progress")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("title")

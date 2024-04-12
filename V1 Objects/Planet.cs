@@ -17,6 +17,7 @@ namespace HellDiver2_API2DB.V1_Objects {
         public required string initialOwner { get; set; }
         public required string currentOwner { get; set; }
         public required double regenPerSecond { get; set; }
+
         [ForeignKey("FK_Events_ID")]
         public eventData? events { get; set; }
         public long? FK_Events_ID { get; set; }
@@ -35,6 +36,7 @@ namespace HellDiver2_API2DB.V1_Objects {
                index == data.index
             && health == data.health
             && regenPerSecond == data.regenPerSecond
+            && events?.id == data.events?.id
             ) {
                 return true;
             }

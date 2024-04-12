@@ -8,6 +8,6 @@
         public required DateTime startTime { get; set; }
         public required DateTime endTime { get; set; }
         public required Int64 campaignId { get; set; }
-        public required int[] joinOperationIds { get; set; }
+        public required int[] joinOperationIds { get; set; } = [];
     }
 }

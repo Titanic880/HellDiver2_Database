@@ -15,6 +15,7 @@ namespace HellDiver2_API2DB.V1_Objects {
         [ForeignKey("FK_Reward_ID")]
         public required Reward reward { get; set; }
         public long FK_Reward_ID { get; set; }
+        public DateTime expiration { get; set; }
 
         public const bool CanIndex = true;
         public const string apiEndpoint = "/api/v1/assignments";
