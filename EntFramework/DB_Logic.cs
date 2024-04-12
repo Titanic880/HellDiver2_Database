@@ -16,7 +16,7 @@ namespace HellDiver2_API2DB.EntFramework {
 
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
-                assignmentData? data = cont.assignmentDatas.Where(x => x.Equals(Data[i])).OrderBy(x=>x.PK_id).Last();
+                assignmentData? data = cont.assignmentDatas.Where(x => x.id == Data[i].id).OrderBy(x=>x.PK_id).Last();
                 if (data != null) {
                     if (data.Equals(Data[i])) {
                         continue;
@@ -55,9 +55,11 @@ namespace HellDiver2_API2DB.EntFramework {
 
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
-                Campaign2? data = cont.campaign2s.Where(x => x.id==Data[i].id).FirstOrDefault();
-                if(data != null) {
-                    continue;
+                Campaign2? data = cont.campaign2s.Where(x => x.id==Data[i].id).OrderBy(x=>x.PK_id).Last();
+                if (data != null) {
+                    if (data.Equals(Data[i])) {
+                        continue;
+                    }
                 }
                 Data[i].PK_id = keys[0];
                 Data[i].planet.PK_id = keys[1];
@@ -95,7 +97,9 @@ namespace HellDiver2_API2DB.EntFramework {
             for (int i = 0; i < Data.Length; i++) {
                 Dispatch? data = cont.dispatches.Where(x => x.id==Data[i].id).OrderBy(x=>x.PK_id).Last();
                 if (data != null) {
-                    continue;
+                    if (data.Equals(Data[i])) {
+                        continue;
+                    }
                 }
                 Data[i].PK_id = Key;
                 cont.dispatches.Add(Data[i]);
