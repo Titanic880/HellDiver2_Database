@@ -14,9 +14,7 @@
             }
             if (
                 id == data.id
-            && published == data.published
             && type == data.type
-            && message == data.message
             ) {
                 return true;
             }

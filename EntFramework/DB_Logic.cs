@@ -351,5 +351,22 @@ namespace HellDiver2_API2DB.EntFramework {
         }
         #endregion KeyValues
 
+        #region GetValues
+        public static eventData GetEvent(long Pk_Id) {
+            using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+
+            }
+            return cont.eventDatas.Where(x => x.PK_id == Pk_Id).OrderBy(x => x.PK_id).Last();
+        }
+        public static Planet GetPlanet(long Pk_Id) {
+            using DB_Context cont = new();
+            if (!cont.Database.CanConnect()) {
+
+            }
+            return cont.planets.Where(x => x.PK_id == Pk_Id).OrderBy(x => x.PK_id).Last();
+        }
+
+        #endregion GetValues
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using HellDiver2_API2DB.EntFramework;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Threading.Tasks;
 
 namespace HellDiver2_API2DB.V1_Objects {
@@ -32,15 +33,24 @@ namespace HellDiver2_API2DB.V1_Objects {
             if (obj is not Planet data) {
                 return false;
             }
+            //Dereference from the objects
+            eventData? e1 = events;
+            eventData? e2 = data.events;
+            if(e1 == null && FK_Events_ID != null) {
+                e1 = DB_Logic.GetEvent((long)FK_Events_ID!);
+            }
+            if(e2 == null && data.FK_Events_ID != null) {
+                e2 = DB_Logic.GetEvent((long)FK_Events_ID!);
+            }
+
             if ( //Check against things that might change so that we can get reliable updates
                index == data.index
             && health == data.health
             && regenPerSecond == data.regenPerSecond
-            && events?.id == data.events?.id
+            && e1?.id == e2?.id
             ) {
                 return true;
             }
-
             return false;
         }
 

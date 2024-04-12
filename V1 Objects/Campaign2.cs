@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using HellDiver2_API2DB.EntFramework;
+using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HellDiver2_API2DB.V1_Objects {
     internal class Campaign2 : Database_Record {
@@ -16,10 +18,18 @@ namespace HellDiver2_API2DB.V1_Objects {
             if(obj is not Campaign2 data) {
                 return false;
             }
+            //Ensures we do not change the state of the objects
+            Planet e1 = planet;
+            Planet e2 = data.planet;
+            if (e1 == null && FK_Planet_ID != default) {
+                e1 = DB_Logic.GetPlanet(FK_Planet_ID);
+            }
+            if(e2 == null && data.FK_Planet_ID != default) {
+                e2 = DB_Logic.GetPlanet(data.FK_Planet_ID);
+            }
             if(
-                id == data.id
-            &&  planet == data.planet
-            &&  FK_Planet_ID == data.FK_Planet_ID
+               id == data.id
+            && e1!.index == e2!.index
             && type == data.type
             && count == data.count
             ) {

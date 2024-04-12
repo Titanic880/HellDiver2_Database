@@ -27,9 +27,7 @@ namespace HellDiver2_API2DB.V1_Objects {
             if (
                id == data.id
             && title == data.title
-            && briefing == data.briefing
-            && description == data.description
-            && progress == data.progress
+            && Enumerable.SequenceEqual(progress, data.progress)
             ) {
                 return true;
             }
