@@ -1,5 +1,5 @@
 ﻿namespace HellDiver2_API2DB.V1_Objects {
-    internal class eventData : Database_Record {
+    public class eventData : Database_Record {
         public required int id { get; set; }                    //Provided by API
         public required int eventType { get; set; }
         public required string faction { get; set; }

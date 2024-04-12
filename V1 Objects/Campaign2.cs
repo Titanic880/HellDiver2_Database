@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HellDiver2_API2DB.V1_Objects {
-    internal class Campaign2 : Database_Record {
+    public class Campaign2 : Database_Record {
         public required int id { get; set; }                    //Provided by API
         [ForeignKey("FK_Planet_ID")]
         public required Planet planet { get; set; }

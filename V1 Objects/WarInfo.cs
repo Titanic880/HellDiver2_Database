@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HellDiver2_API2DB.V1_Objects {
-    internal class WarInfo : Database_Record {
+    public class WarInfo : Database_Record {
         public required DateTime started { get; set; }
         public required DateTime ended { get; set; }
         public required DateTime now { get; set; }

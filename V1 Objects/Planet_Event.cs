@@ -1,10 +1,16 @@
-﻿using HellDiver2_API2DB.V1_Objects;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using HellDiver2_API2DB.V1_Objects;
+using HellDiver2_API2DB;
 
 namespace HD2_EFDatabase.V1_Objects {
-    internal class Planet_Event : Planet {
+    internal class Planet_Event : Database_Record {
+        [ForeignKey("FK_Planet_ID")]
+        public required Planet planet { get; set; }
+        public int FK_Planet_ID { get; set; }
         public int[] attacking { get; set; } = [];
-        public new const bool CanIndex = false;
-        public new const string apiEndpoint = "/api/v1/planet-events";
+
+        public const bool CanIndex = false;
+        public const string apiEndpoint = "/api/v1/planet-events";
 
         public override bool Equals(object? obj) {
             if (obj is not Planet_Event data) {

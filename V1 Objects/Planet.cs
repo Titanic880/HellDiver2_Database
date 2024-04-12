@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Threading.Tasks;
 
 namespace HellDiver2_API2DB.V1_Objects {
-    internal class Planet : Database_Record {
+    public class Planet : Database_Record {
         public required int index { get; set; }                  //Provided by API 
         public required string name { get; set; }
         public required string sector { get; set; }

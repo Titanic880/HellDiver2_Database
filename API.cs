@@ -1,5 +1,5 @@
 ﻿namespace HellDiver2_API2DB {
-    public static class API {
+    internal static class API {
         private static int CallsLeft = 1;
         private static readonly int API_SleepTime = Program.UserConfig!.API_SleepTime_s;
         private static DateTime NextCallThres = DateTime.Now;

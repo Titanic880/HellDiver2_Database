@@ -1,5 +1,5 @@
 ﻿namespace HellDiver2_API2DB.V1_Objects {
-    internal class Dispatch : Database_Record {
+    public class Dispatch : Database_Record {
         public required int id { get; set; }                //Provided by API
         public required DateTime published { get; set; }
         public required int type { get; set; }

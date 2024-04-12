@@ -1,5 +1,5 @@
 ﻿namespace HellDiver2_API2DB.V1_Objects {
-    internal class Statistics : Database_Record {
+    public class Statistics : Database_Record {
         public required Int64 missionsWon { get; set; }
         public required Int64 missionsLost { get; set; }
         public required Int64 missionTime { get; set; }

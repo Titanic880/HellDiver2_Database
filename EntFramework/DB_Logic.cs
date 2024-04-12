@@ -3,7 +3,7 @@
 namespace HellDiver2_API2DB.EntFramework {
     internal static class DB_Logic {
         #region AddToDatabase
-        public static bool AddAssignmentData(assignmentData[] Data) {
+        internal static bool AddAssignmentData(assignmentData[] Data) {
             using DB_Context cont = new();
             if (!cont.Database.CanConnect()) {
                 return false;
@@ -39,7 +39,7 @@ namespace HellDiver2_API2DB.EntFramework {
             cont.SaveChanges();
             return ret;
         }
-        public static bool AddCampaign2(Campaign2[] Data) {
+        internal static bool AddCampaign2(Campaign2[] Data) {
             using DB_Context cont = new();
             if (!cont.Database.CanConnect()) {
                 return false;
@@ -86,7 +86,7 @@ namespace HellDiver2_API2DB.EntFramework {
             cont.SaveChanges();
             return ret;
         }
-        public static bool AddDispatch(Dispatch[] Data) {
+        internal static bool AddDispatch(Dispatch[] Data) {
             using DB_Context cont = new();
             if (!cont.Database.CanConnect()) {
                 return false;
@@ -108,7 +108,7 @@ namespace HellDiver2_API2DB.EntFramework {
             cont.SaveChanges();
             return ret;
         }
-        public static bool AddEventData(eventData[] Data) {
+        internal static bool AddEventData(eventData[] Data) {
             using DB_Context cont = new();
             if (!cont.Database.CanConnect()) {
                 return false;
@@ -130,7 +130,7 @@ namespace HellDiver2_API2DB.EntFramework {
             cont.SaveChanges();
             return ret;
         }
-        public static bool AddPlanets(Planet[] Data){
+        internal static bool AddPlanets(Planet[] Data){
             using DB_Context cont = new();
             if (!cont.Database.CanConnect()) {
                 return false;
@@ -176,7 +176,7 @@ namespace HellDiver2_API2DB.EntFramework {
             cont.SaveChanges();
             return ret;
         }
-        public static bool AddsteamData(steamData[] Data) {
+        internal static bool AddsteamData(steamData[] Data) {
             using DB_Context cont = new();
             if (!cont.Database.CanConnect()) {
                 return false;
@@ -198,7 +198,7 @@ namespace HellDiver2_API2DB.EntFramework {
             cont.SaveChanges();
             return ret;
         }
-        public static bool AddWarInfo(WarInfo Data) {
+        internal static bool AddWarInfo(WarInfo Data) {
             using DB_Context cont = new();
             if (!cont.Database.CanConnect()) {
                 return false;
@@ -225,18 +225,6 @@ namespace HellDiver2_API2DB.EntFramework {
             return ret;
         }
         #endregion AddToDatabase
-        #region UpdateDatabase
-        public static void UpdatePlanet(long toUpdateID,Planet NewPlanet) {
-            using DB_Context cont = new();
-            if (!cont.Database.CanConnect()) {
-                return;
-            }
-            NewPlanet.PK_id = toUpdateID;
-            Planet update = cont.planets.Where(x=>x.PK_id == toUpdateID).First();
-            update = NewPlanet;
-            cont.SaveChanges();
-        }
-        #endregion UpdateDatabase
         #region KeyValues
         private static long GetNextassignmentKey() {
             using DB_Context cont = new();
