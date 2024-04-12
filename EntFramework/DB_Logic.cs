@@ -16,13 +16,12 @@ namespace HellDiver2_API2DB.EntFramework {
 
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
-                assignmentData? data = cont.assignmentDatas.Where(x => x.id == Data[i].id).OrderBy(x=>x.PK_id).Last();
+                assignmentData? data = cont.assignmentDatas.Where(x => x.id == Data[i].id).OrderBy(x=>x.PK_id).LastOrDefault();
                 if (data != null) {
                     if (data.Equals(Data[i])) {
                         continue;
                     }
                 }
-
                 Data[i].PK_id = keys[0];
                 taskData[] vals = [.. Data[i].tasks];
                 for (int x = 0; x < vals.Length; x++) {
@@ -55,7 +54,7 @@ namespace HellDiver2_API2DB.EntFramework {
 
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
-                Campaign2? data = cont.campaign2s.Where(x => x.id==Data[i].id).OrderBy(x=>x.PK_id).Last();
+                Campaign2? data = cont.campaign2s.Where(x => x.id==Data[i].id).OrderBy(x=>x.PK_id).LastOrDefault();
                 if (data != null) {
                     if (data.Equals(Data[i])) {
                         continue;
@@ -95,7 +94,7 @@ namespace HellDiver2_API2DB.EntFramework {
             long Key = GetNextDispatchKey();
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
-                Dispatch? data = cont.dispatches.Where(x => x.id==Data[i].id).OrderBy(x=>x.PK_id).Last();
+                Dispatch? data = cont.dispatches.Where(x => x.id==Data[i].id).OrderBy(x=>x.PK_id).LastOrDefault();
                 if (data != null) {
                     if (data.Equals(Data[i])) {
                         continue;
@@ -117,7 +116,7 @@ namespace HellDiver2_API2DB.EntFramework {
             long Key = GetNexteventDataKey();
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
-                eventData? data = cont.eventDatas.Where(x => x.id == Data[i].id).OrderBy(x=>x.PK_id).Last();
+                eventData? data = cont.eventDatas.Where(x => x.id == Data[i].id).OrderBy(x=>x.PK_id).LastOrDefault();
                 if (data != null) {
                     if (data.Equals(Data[i])) {
                         continue;
@@ -146,7 +145,7 @@ namespace HellDiver2_API2DB.EntFramework {
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
                 //Grab the most upto date version of the planet
-                Planet? data = cont.planets.Where(x => x.index == Data[i].index).OrderBy(x=>x.PK_id).Last();
+                Planet? data = cont.planets.Where(x => x.index == Data[i].index).OrderBy(x=>x.PK_id).LastOrDefault();
                 if (data != null) {
                     if (data.Equals(Data[i])) {
                         continue;
@@ -185,7 +184,7 @@ namespace HellDiver2_API2DB.EntFramework {
             long Key = GetNextsteamDataKey();
             bool ret = false;
             for (int i = 0; i < Data.Length; i++) {
-                steamData? data = cont.steamDatas.Where(x => x.id == Data[i].id).OrderBy(x=>x.PK_id).Last();
+                steamData? data = cont.steamDatas.Where(x => x.id == Data[i].id).OrderBy(x=>x.PK_id).LastOrDefault();
                 if (data != null) {
                     if (data.Equals(Data[i])) {
                         continue;
@@ -352,19 +351,19 @@ namespace HellDiver2_API2DB.EntFramework {
         #endregion KeyValues
 
         #region GetValues
-        public static eventData GetEvent(long Pk_Id) {
+        public static eventData? GetEvent(long Pk_Id) {
             using DB_Context cont = new();
             if (!cont.Database.CanConnect()) {
 
             }
-            return cont.eventDatas.Where(x => x.PK_id == Pk_Id).OrderBy(x => x.PK_id).Last();
+            return cont.eventDatas.Where(x => x.PK_id == Pk_Id).OrderBy(x => x.PK_id).LastOrDefault();
         }
-        public static Planet GetPlanet(long Pk_Id) {
+        public static Planet? GetPlanet(long Pk_Id) {
             using DB_Context cont = new();
             if (!cont.Database.CanConnect()) {
 
             }
-            return cont.planets.Where(x => x.PK_id == Pk_Id).OrderBy(x => x.PK_id).Last();
+            return cont.planets.Where(x => x.PK_id == Pk_Id).OrderBy(x => x.PK_id).LastOrDefault();
         }
 
         #endregion GetValues

@@ -8,6 +8,7 @@ namespace HellDiver2_API2DB.V1_Objects {
         public required string name { get; set; }
         public required string sector { get; set; }
         public required Int64 hash { get; set; }
+        //TODO: Make this search up and use an already existing position if able.
         [ForeignKey("FK_Position_ID")]
         public required xyPosition position { get; set; }
         public long FK_Position_ID { get; set; }

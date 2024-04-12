@@ -19,8 +19,8 @@ namespace HellDiver2_API2DB.V1_Objects {
                 return false;
             }
             //Ensures we do not change the state of the objects
-            Planet e1 = planet;
-            Planet e2 = data.planet;
+            Planet? e1 = planet;
+            Planet? e2 = data.planet;
             if (e1 == null && FK_Planet_ID != default) {
                 e1 = DB_Logic.GetPlanet(FK_Planet_ID);
             }
