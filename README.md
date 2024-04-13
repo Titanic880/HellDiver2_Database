@@ -10,3 +10,8 @@ Discord Username (used in header as a blame)
 
 Then use `dotnet ef database update` to push the EF migrations to your database   
 (This generates all tables and information required for the database to work)
+
+### Release
+A release build is avaliable at:   
+https://hub.docker.com/repository/docker/titanic880/hd2efdatabase/general   
+Please be aware that while this is a tested build, it can and probably will still contain some bugs.
