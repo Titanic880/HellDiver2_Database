@@ -4,12 +4,20 @@ utilizes the `https://github.com/helldivers-2/api` community API to interface wi
 
 `HellDiver2_EntityFramework_DB` can be run standalone or compiled into a docker container.
 
-Prior to properly running the project you will have to run the project and update the `Config.json` with:  
-Database information,  
-Discord Username (used in header as a blame)  
+Prior to properly running the project you will have to run the project and update the `Config.json` with:     
+SQL_IP -> location of database (`localhost` is valid if running locally)   
+SQL_DB -> Name of the database within the engine    
+SQL_ID -> the login username you want the application to use   
+SQL_PW -> Plaintext password of the provided ID (NEEDS TO BE MOVED TO ENV)
+API_Contact -> Discord Username or other means to reach out to you (required by the api)
+FirstRun -> Set to false if manually updating database with migrations
+[!WARNING]
+Sleep timers can be adjusted but API restrictions will be enforced as needed
 
-Then use `dotnet ef database update` to push the EF migrations to your database   
-(This generates all tables and information required for the database to work)
+### Is not required but recommended
+Use `dotnet ef database update` to push the EF migrations to your database   
+(This generates all tables and information required for the database to work)   
+And manually set FirstRun to false in the config.json
 
 ### Release
 A release build is avaliable at:   
