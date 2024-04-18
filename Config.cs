@@ -1,6 +1,6 @@
 ﻿namespace HellDiver2_API2DB {
     internal class Config {
-        public int Config_Ver = 2;
+        public int Config_Ver = 3;
         public string API_Contact = "YOURNAMEHERE";
         public string API_Endpoint = "https://helldivers-2-dotnet.fly.dev";
         public int API_SleepTime_s = 15;
@@ -10,6 +10,7 @@
         public string SQL_DB = "newDb";
         public string SQL_ID = "sa";
         public string SQL_PW = "PASSWORD";
+        public bool FirstRun = true;
         public bool DefaultVal() {
             if(
                 API_Contact == new Config().API_Contact ||

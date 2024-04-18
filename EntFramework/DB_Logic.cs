@@ -1,7 +1,44 @@
 ﻿using HellDiver2_API2DB.V1_Objects;
+using Microsoft.EntityFrameworkCore;
 
 namespace HellDiver2_API2DB.EntFramework {
     internal static class DB_Logic {
+        /// <summary>
+        /// Checks to see if migration has been applied and datatables exist
+        /// </summary>
+        /// <returns></returns>
+        internal static bool DataTableCheck() {
+            try {
+                using DB_Context cont = new();
+                //Attempt to access each tables in someway without breaking due to no data
+                _ = cont.assignmentDatas.Count();
+                _ = cont.taskDatas.Count();
+                _ = cont.rewards.Count();
+                _ = cont.campaign2s.Count();
+                _ = cont.dispatches.Count();
+                _ = cont.eventDatas.Count();
+                _ = cont.planets.Count();
+                _ = cont.xyPositions.Count();
+                _ = cont.statistics.Count();
+                _ = cont.steamDatas.Count();
+                _ = cont.xyPositions.Count();
+                _ = cont.warInfos.Count();
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
+        }
+
+        internal static bool GenerateDatabase() {
+            try {
+                using DB_Context cont = new();
+                cont.Database.Migrate();
+            } catch {
+                return false;
+            }
+            return true;
+        }
+
         #region AddToDatabase
         internal static bool AddAssignmentData(assignmentData[] Data) {
             using DB_Context cont = new();

@@ -7,7 +7,7 @@
 
         internal static string CallAPI(string uriEndpoint) {
             if (CallsLeft == 0) {
-                Console.WriteLine($"[{DateTime.UtcNow}] Sleeping for {API_SleepTime} seconds");
+                Console.WriteLine($"[{DateTime.UtcNow}][Info] Sleeping for {API_SleepTime} seconds");
                 Thread.Sleep(API_SleepTime * 1000);
                 CallsLeft += 1;
                 return CallAPI(uriEndpoint);
@@ -20,8 +20,8 @@
             try {
                 res = client.GetAsync(uriEndpoint).Result;
             } catch (Exception e) { 
-                Console.WriteLine($"[{DateTime.UtcNow}] Exception caught in API: {e}");
-                Console.WriteLine("Retry will occour in 10 minutes...");
+                Console.WriteLine($"[{DateTime.UtcNow}][WARNING] Exception caught in API: {e}");
+                Console.WriteLine($"[{DateTime.UtcNow}][Info] Retry will occour in 10 minutes...");
                 Thread.Sleep(600000);
                 return CallAPI(uriEndpoint);
             }
@@ -35,7 +35,7 @@
                 throw new Exception("404: Content not found");
             } else if (res.StatusCode == System.Net.HttpStatusCode.TooManyRequests) {
                 _ = int.TryParse(res.Headers.GetValues("Retry-After").First(), out int wait);
-                Console.WriteLine($"[{DateTime.UtcNow}] 429: Sleeping for {wait} seconds");
+                Console.WriteLine($"[{DateTime.UtcNow}][WARNING] 429: Sleeping for {wait} seconds");
                 Thread.Sleep(wait * 1000);
                 CallsLeft += 1;
                 return CallAPI(uriEndpoint);
