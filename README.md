@@ -10,7 +10,8 @@ SQL_DB -> Name of the database within the engine
 SQL_ID -> the login username you want the application to use   
 SQL_PW -> Plaintext password of the provided ID (NEEDS TO BE MOVED TO ENV)
 API_Contact -> Discord Username or other means to reach out to you (required by the api)
-FirstRun -> Set to false if manually updating database with migrations
+FirstRun -> Set to false if manually updating database with migrations     
+
 [!WARNING]
 Sleep timers can be adjusted but API restrictions will be enforced as needed
 
