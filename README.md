@@ -14,7 +14,7 @@ FirstRun -> Set to false if manually updating database with migrations
 [!WARNING]
 Sleep timers can be adjusted but API restrictions will be enforced as needed
 
-### Is not required but recommended
+### Optional DataTable Manual Setup
 Use `dotnet ef database update` to push the EF migrations to your database   
 (This generates all tables and information required for the database to work)   
 And manually set FirstRun to false in the config.json
