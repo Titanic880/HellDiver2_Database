@@ -20,7 +20,8 @@ namespace HD2_EFDatabase {
                 userConfig.FirstRun = false;
                 DumpConfig(userConfig);
             }
-
+            
+            DateTime start = DateTime.Now;;
             //Main Update Loop
             while (true) {
                 Console.WriteLine($"[{DateTime.UtcNow}][Info] New Assignments: {DbLogic.AddAssignmentData(JsonConvert.DeserializeObject<assignmentData[]>(Api.GetCallApi(assignmentData.apiEndpoint))!)}");
@@ -30,7 +31,7 @@ namespace HD2_EFDatabase {
                 Console.WriteLine($"[{DateTime.UtcNow}][Info] New steamData: {DbLogic.AddsteamData(JsonConvert.DeserializeObject<SteamData[]>(Api.GetCallApi(SteamData.ApiEndpoint))!)}");
                 Console.WriteLine($"[{DateTime.UtcNow}][Info] New WarInfo: {DbLogic.AddWarInfo(JsonConvert.DeserializeObject<WarInfo>(Api.GetCallApi(WarInfo.ApiEndpoint))!)}");
                 Console.WriteLine($"[{DateTime.UtcNow}][Info] Sleeping for: {userConfig.SleepInterval_ms/1000} seconds");
-                Thread.Sleep(userConfig.SleepInterval_ms); //Sleep for 10 minutes between updates
+                Thread.Sleep(userConfig.SleepInterval_ms - (DateTime.Now - start).Milliseconds); //Sleep for 10 minutes between updates
             }
         }
 
