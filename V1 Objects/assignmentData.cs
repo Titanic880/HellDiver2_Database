@@ -1,9 +1,8 @@
-﻿using HellDiver2_API2DB.EntFramework;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace HellDiver2_API2DB.V1_Objects {
-    public class assignmentData : Database_Record {
-        public required Int64 id { get; set; }            //Provided by API
+namespace HD2_EFDatabase.V1_Objects {
+    public class assignmentData : DatabaseRecord {
+        public required long id { get; set; }            //Provided by API
         public int[] progress { get; set; } = [];
         public required string title { get; set; }
         public required string briefing { get; set; }
@@ -24,14 +23,9 @@ namespace HellDiver2_API2DB.V1_Objects {
             if(obj is not assignmentData data) {
                 return false;
             }
-            if (
-               id == data.id
-            && title == data.title
-            && Enumerable.SequenceEqual(progress, data.progress)
-            ) {
-                return true;
-            }
-            return false;
+            return id    == data.id
+                && title == data.title
+                && progress.SequenceEqual(data.progress);
         }
 
         public override int GetHashCode() {
@@ -39,13 +33,42 @@ namespace HellDiver2_API2DB.V1_Objects {
         }
     }
 
-    public class taskData : Database_Record {
+
+    public class taskData : DatabaseRecord {
+        /// <summary>
+        /// PK of the parent object
+        /// </summary>
+        public long FK_Task_ID { get; set; }
         public required int type {  get; set; }
         public required int[] values {  get; set; }
         public required int[] valueTypes {  get; set; }
-    }
-    public class Reward : Database_Record {
-        public required int type { get; set; }          //1 => Medals
+
+        //Still learning about what the values actually are
+        private enum TaskValueEn {
+            Race = 1,
+            IDFK1 = 2,
+            GoalValue = 3,
+            IDFK2 = 4,
+            IDFK3 = 5,
+            IDFK4 = 8,
+            IDFK5 = 9,
+            MajorOrder = 11,
+            PlanetIndex = 12
+        }
+
+        private enum MajorOrderTypes {
+            Eradicate = 3,
+            Liberation = 11,
+            Defense = 12,
+            Control = 13
+        }
+}
+    public class Reward : DatabaseRecord {
+        public required int type { get; set; }
+
+        private enum RewardType {
+            Medals = 1
+        }
         public required int amount { get; set; }
     }
 }

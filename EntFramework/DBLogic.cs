@@ -1,15 +1,15 @@
-﻿using HellDiver2_API2DB.V1_Objects;
+﻿using HD2_EFDatabase.V1_Objects;
 using Microsoft.EntityFrameworkCore;
 
-namespace HellDiver2_API2DB.EntFramework {
-    internal static class DB_Logic {
+namespace HD2_EFDatabase.EntFramework {
+    internal static class DbLogic {
         /// <summary>
         /// Checks to see if migration has been applied and datatables exist
         /// </summary>
         /// <returns></returns>
         internal static bool DataTableCheck() {
             try {
-                using DB_Context cont = new();
+                using DbContext cont = new();
                 //Attempt to access each tables in someway without breaking due to no data
                 _ = cont.assignmentDatas.Count();
                 _ = cont.taskDatas.Count();
@@ -23,7 +23,7 @@ namespace HellDiver2_API2DB.EntFramework {
                 _ = cont.steamDatas.Count();
                 _ = cont.xyPositions.Count();
                 _ = cont.warInfos.Count();
-            } catch (Exception e) {
+            } catch {
                 return false;
             }
             return true;
@@ -31,7 +31,7 @@ namespace HellDiver2_API2DB.EntFramework {
 
         internal static bool GenerateDatabase() {
             try {
-                using DB_Context cont = new();
+                using DbContext cont = new();
                 cont.Database.Migrate();
             } catch {
                 return false;
@@ -40,44 +40,61 @@ namespace HellDiver2_API2DB.EntFramework {
         }
 
         #region AddToDatabase
-        internal static bool AddAssignmentData(assignmentData[] Data) {
-            using DB_Context cont = new();
+
+        internal static bool AddAssignmentData(assignmentData[] data) {
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
                 return false;
             }
+
             long[] keys = [
                 GetNextassignmentKey(),
                 GetNextTaskDataKey(),
                 GetNextRewardKey()
-                ];
+            ];
 
             bool ret = false;
-            for (int i = 0; i < Data.Length; i++) {
-                assignmentData? data = cont.assignmentDatas.Where(x => x.id == Data[i].id).OrderBy(x=>x.PK_id).LastOrDefault();
-                if (data != null) {
-                    if (data.Equals(Data[i])) {
+            for (int i = 0; i < data.Length; i++) {
+                assignmentData? databit = cont.assignmentDatas
+                                           .Where(x => x.id == data[i].id)
+                                           .OrderBy(x => x.PK_id)
+                                           .LastOrDefault();
+                if (databit != null) {
+                    if (databit.Equals(data[i])) {
                         continue;
                     }
                 }
-                Data[i].PK_id = keys[0];
-                taskData[] vals = [.. Data[i].tasks];
+
+                data[i].PK_id      = keys[0];
+                data[i].FK_Task_ID = keys[1];
+
+                taskData[] vals     = [.. data[i].tasks];
+                long[]     keyVals = new long[data[i].tasks.Count];
+
                 for (int x = 0; x < vals.Length; x++) {
-                    vals[x].PK_id = keys[1];
+                    vals[x].PK_id      = keys[1];
+                    vals[x].FK_Task_ID = keys[0]; //Set the PK that this object originates from
+                    keyVals[x]        = keys[1]; //Attempt at resolving many-many link break
                     keys[1]++;
                 }
-                Data[i].tasks = vals;
-                Data[i].reward.PK_id = keys[2];
-                cont.assignmentDatas.Add(Data[i]);
+
+                data[i].tasks        = vals;
+                data[i].reward.PK_id = keys[2];
+
+                // Data[i].FK_Task_ID = key_vals;
+                cont.assignmentDatas.Add(data[i]);
                 ret = true;
                 keys[0]++;
                 //keys[1] is updated during assignment
                 keys[2]++;
             }
+
             cont.SaveChanges();
             return ret;
         }
-        internal static bool AddCampaign2(Campaign2[] Data) {
-            using DB_Context cont = new();
+
+        internal static bool AddCampaign2(Campaign2[] data) {
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
                 return false;
             }
@@ -90,30 +107,33 @@ namespace HellDiver2_API2DB.EntFramework {
                 ];
 
             bool ret = false;
-            for (int i = 0; i < Data.Length; i++) {
-                Campaign2? data = cont.campaign2s.Where(x => x.id==Data[i].id).OrderBy(x=>x.PK_id).LastOrDefault();
-                if (data != null) {
-                    if (data.Equals(Data[i])) {
+            for (int i = 0; i < data.Length; i++) {
+                Campaign2? databit = cont.campaign2s
+                                         .Where(x => x.id==data[i].id)
+                                         .OrderBy(x=>x.PK_id)
+                                         .LastOrDefault();
+                if (databit != null) {
+                    if (databit.Equals(data[i])) {
                         continue;
                     }
                 }
-                Data[i].PK_id = keys[0];
-                Data[i].planet.PK_id = keys[1];
-                Data[i].planet.position.PK_id= keys[2];
+                data[i].PK_id = keys[0];
+                data[i].planet.PK_id = keys[1];
+                data[i].planet.position.PK_id= keys[2];
 
-                if (Data[i].planet.events != null) {
-                    Data[i].planet.events!.PK_id = keys[3];
+                if (data[i].planet.events != null) {
+                    data[i].planet.events!.PK_id = keys[3];
                     keys[3]++;
                 } else {
-                    Data[i].planet.FK_Events_ID = null;
+                    data[i].planet.FK_Events_ID = null;
                 }
-                if (Data[i].planet.statistics != null) {
-                    Data[i].planet.statistics!.PK_id = keys[4];
+                if (data[i].planet.statistics != null) {
+                    data[i].planet.statistics!.PK_id = keys[4];
                     keys[4]++;
                 } else {
-                    Data[i].planet.FK_Stats_ID = null;
+                    data[i].planet.FK_Stats_ID = null;
                 }
-                cont.campaign2s.Add(Data[i]);
+                cont.campaign2s.Add(data[i]);
                 ret = true;
 
                 keys[0]++;
@@ -123,52 +143,58 @@ namespace HellDiver2_API2DB.EntFramework {
             cont.SaveChanges();
             return ret;
         }
-        internal static bool AddDispatch(Dispatch[] Data) {
-            using DB_Context cont = new();
+        internal static bool AddDispatch(Dispatch[] data) {
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
                 return false;
             }
-            long Key = GetNextDispatchKey();
+            long key = GetNextDispatchKey();
             bool ret = false;
-            for (int i = 0; i < Data.Length; i++) {
-                Dispatch? data = cont.dispatches.Where(x => x.id==Data[i].id).OrderBy(x=>x.PK_id).LastOrDefault();
-                if (data != null) {
-                    if (data.Equals(Data[i])) {
+            for (int i = 0; i < data.Length; i++) {
+                Dispatch? databit = cont.dispatches
+                                        .Where(x => x.id==data[i].id)
+                                        .OrderBy(x=>x.PK_id)
+                                        .LastOrDefault();
+                if (databit != null) {
+                    if (databit.Equals(data[i])) {
                         continue;
                     }
                 }
-                Data[i].PK_id = Key;
-                cont.dispatches.Add(Data[i]);
+                data[i].PK_id = key;
+                cont.dispatches.Add(data[i]);
                 ret = true;
-                Key++;
+                key++;
             }
             cont.SaveChanges();
             return ret;
         }
-        internal static bool AddEventData(eventData[] Data) {
-            using DB_Context cont = new();
+        internal static bool AddEventData(EventData[] data) {
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
                 return false;
             }
-            long Key = GetNexteventDataKey();
+            long key = GetNexteventDataKey();
             bool ret = false;
-            for (int i = 0; i < Data.Length; i++) {
-                eventData? data = cont.eventDatas.Where(x => x.id == Data[i].id).OrderBy(x=>x.PK_id).LastOrDefault();
-                if (data != null) {
-                    if (data.Equals(Data[i])) {
+            for (int i = 0; i < data.Length; i++) {
+                EventData? databit = cont.eventDatas
+                                         .Where(x => x.id == data[i].id)
+                                         .OrderBy(x=>x.PK_id)
+                                         .LastOrDefault();
+                if (databit != null) {
+                    if (databit.Equals(data[i])) {
                         continue;
                     }
                 }
-                Data[i].PK_id = Key;
-                cont.eventDatas.Add(Data[i]);
+                data[i].PK_id = key;
+                cont.eventDatas.Add(data[i]);
                 ret = true;
-                Key++;
+                key++;
             }
             cont.SaveChanges();
             return ret;
         }
-        internal static bool AddPlanets(Planet[] Data){
-            using DB_Context cont = new();
+        internal static bool AddPlanets(Planet[] data){
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
                 return false;
             }
@@ -180,29 +206,32 @@ namespace HellDiver2_API2DB.EntFramework {
                 ];
 
             bool ret = false;
-            for (int i = 0; i < Data.Length; i++) {
+            for (int i = 0; i < data.Length; i++) {
                 //Grab the most upto date version of the planet
-                Planet? data = cont.planets.Where(x => x.index == Data[i].index).OrderBy(x=>x.PK_id).LastOrDefault();
-                if (data != null) {
-                    if (data.Equals(Data[i])) {
+                Planet? databit = cont.planets
+                                      .Where(x => x.index == data[i].index)
+                                      .OrderBy(x=>x.PK_id)
+                                      .LastOrDefault();
+                if (databit != null) {
+                    if (databit.Equals(data[i])) {
                         continue;
                     }
                 }
-                Data[i].PK_id = keys[0];
-                Data[i].position.PK_id = keys[1];
-                if (Data[i].events != null) {
-                    Data[i].events!.PK_id = keys[2];
+                data[i].PK_id = keys[0];
+                data[i].position.PK_id = keys[1];
+                if (data[i].events != null) {
+                    data[i].events!.PK_id = keys[2];
                     keys[2]++;
                 } else {
-                    Data[i].FK_Events_ID = null;
+                    data[i].FK_Events_ID = null;
                 }
-                if (Data[i].statistics != null) {
-                    Data[i].statistics!.PK_id = keys[3];
+                if (data[i].statistics != null) {
+                    data[i].statistics!.PK_id = keys[3];
                     keys[3]++;
                 } else {
-                    Data[i].FK_Stats_ID = null;
+                    data[i].FK_Stats_ID = null;
                 }
-                cont.planets.Add(Data[i]);
+                cont.planets.Add(data[i]);
 
                 keys[0]++;
                 keys[1]++;
@@ -213,58 +242,60 @@ namespace HellDiver2_API2DB.EntFramework {
             cont.SaveChanges();
             return ret;
         }
-        internal static bool AddsteamData(steamData[] Data) {
-            using DB_Context cont = new();
+        internal static bool AddsteamData(SteamData[] data) {
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
                 return false;
             }
-            long Key = GetNextsteamDataKey();
+            long key = GetNextsteamDataKey();
             bool ret = false;
-            for (int i = 0; i < Data.Length; i++) {
-                steamData? data = cont.steamDatas.Where(x => x.id == Data[i].id).OrderBy(x=>x.PK_id).LastOrDefault();
-                if (data != null) {
-                    if (data.Equals(Data[i])) {
+            for (int i = 0; i < data.Length; i++) {
+                SteamData? databit = cont.steamDatas
+                                         .Where(x => x.id == data[i].id)
+                                         .OrderBy(x=>x.PK_id)
+                                         .LastOrDefault();
+                if (databit != null) {
+                    if (data.Equals(data[i])) {
                         continue;
                     }
                 }
-                Data[i].PK_id = Key;
-                cont.steamDatas.Add(Data[i]);
+                data[i].PK_id = key;
+                cont.steamDatas.Add(data[i]);
                 ret = true;
-                Key++;
+                key++;
             }
             cont.SaveChanges();
             return ret;
         }
-        internal static bool AddWarInfo(WarInfo Data) {
-            using DB_Context cont = new();
+        internal static bool AddWarInfo(WarInfo data) {
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
                 return false;
             }
-            long[] Keys = [
+            long[] keys = [
                 GetNextWarInfoKey(),
                 GetNextStatsKey()
                 ];
 
-            bool ret = false;
-            Data.PK_id = Keys[0];
-            if (Data.statistics != null) {
-                Data.statistics!.PK_id = Keys[1];
-                Keys[1]++;
+            data.PK_id = keys[0];
+            
+            if (data.statistics != null) {
+                data.statistics.PK_id = keys[1];
+                keys[1]++;
             } else {
-                Data.FK_Stats_ID = null;
+                data.FK_Stats_ID = null;
             }
 
-            cont.warInfos.Add(Data);
-            ret = true;
-            Keys[0]++;
+            cont.warInfos.Add(data);
+            keys[0]++;
 
             cont.SaveChanges();
-            return ret;
+            return true;
         }
         #endregion AddToDatabase
         #region KeyValues
         private static long GetNextassignmentKey() {
-            using DB_Context cont = new();
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
                 return -1;
             }
@@ -274,7 +305,7 @@ namespace HellDiver2_API2DB.EntFramework {
             return cont.assignmentDatas.OrderBy(x => x.PK_id).Last().PK_id + 1;
         }
         private static long GetNextTaskDataKey() {
-            using DB_Context cont = new();
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
                 return -1;
             }
@@ -284,7 +315,7 @@ namespace HellDiver2_API2DB.EntFramework {
             return cont.taskDatas.OrderBy(x => x.PK_id).Last().PK_id + 1;
         }
         private static long GetNextRewardKey() {
-            using DB_Context cont = new();
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
                 return -1;
             }
@@ -294,7 +325,7 @@ namespace HellDiver2_API2DB.EntFramework {
             return cont.rewards.OrderBy(x => x.PK_id).Last().PK_id + 1;
         }
         private static long GetNextCampaign2Key() {
-            using DB_Context cont = new();
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
                 return -1;
             }
@@ -304,7 +335,7 @@ namespace HellDiver2_API2DB.EntFramework {
             return cont.campaign2s.OrderBy(x => x.PK_id).Last().PK_id + 1;
         }
         private static long GetNextDispatchKey() {
-            using DB_Context cont = new();
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
                 return -1;
             }
@@ -314,7 +345,7 @@ namespace HellDiver2_API2DB.EntFramework {
             return cont.dispatches.OrderBy(x => x.PK_id).Last().PK_id + 1;
         }
         private static long GetNextsteamDataKey() {
-            using DB_Context cont = new();
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
                 return -1;
             }
@@ -324,7 +355,7 @@ namespace HellDiver2_API2DB.EntFramework {
             return cont.steamDatas.OrderBy(x => x.PK_id).Last().PK_id + 1;
         }
         private static long GetNexteventDataKey() {
-            using DB_Context cont = new();
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
                 return -1;
             }
@@ -334,7 +365,7 @@ namespace HellDiver2_API2DB.EntFramework {
             return cont.eventDatas.OrderBy(x => x.PK_id).Last().PK_id + 1;
         }
         private static long GetNextStatsKey() {
-            using DB_Context cont = new();
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
                 return -1;
             }
@@ -344,7 +375,7 @@ namespace HellDiver2_API2DB.EntFramework {
             return cont.statistics.OrderBy(x => x.PK_id).Last().PK_id + 1;
         }
         private static long GetNextPlanetKey() {
-            using DB_Context cont = new();
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
                 return -1;
             }
@@ -354,17 +385,19 @@ namespace HellDiver2_API2DB.EntFramework {
             return cont.planets.OrderBy(x=>x.PK_id).Last().PK_id + 1;
         }
         private static long GetNextpositionKey() {
-            using DB_Context cont = new();
-            if (!cont.Database.CanConnect()) {
+            using DbContext cont = new();
+            if (cont.Database.CanConnect() is false) {
                 return -1;
             }
             if (!cont.xyPositions.Any()) {
                 return 0;
             }
-            return cont.xyPositions.OrderBy(x => x.PK_id).Last().PK_id + 1;
+            return cont.xyPositions
+                       .OrderBy(x => x.PK_id)
+                       .Last().PK_id + 1;
         }
         private static long GetNextWarInfoKey() {
-            using DB_Context cont = new();
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
                 return -1;
             }
@@ -376,19 +409,19 @@ namespace HellDiver2_API2DB.EntFramework {
         #endregion KeyValues
 
         #region GetValues
-        public static eventData? GetEvent(long Pk_Id) {
-            using DB_Context cont = new();
+        public static EventData? GetEvent(long pkId) {
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
 
             }
-            return cont.eventDatas.Where(x => x.PK_id == Pk_Id).OrderBy(x => x.PK_id).LastOrDefault();
+            return cont.eventDatas.Where(x => x.PK_id == pkId).OrderBy(x => x.PK_id).LastOrDefault();
         }
-        public static Planet? GetPlanet(long Pk_Id) {
-            using DB_Context cont = new();
+        public static Planet? GetPlanet(long pkId) {
+            using DbContext cont = new();
             if (!cont.Database.CanConnect()) {
 
             }
-            return cont.planets.Where(x => x.PK_id == Pk_Id).OrderBy(x => x.PK_id).LastOrDefault();
+            return cont.planets.Where(x => x.PK_id == pkId).OrderBy(x => x.PK_id).LastOrDefault();
         }
 
         #endregion GetValues

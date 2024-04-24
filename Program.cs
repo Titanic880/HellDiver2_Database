@@ -1,35 +1,36 @@
-﻿using HellDiver2_API2DB.EntFramework;
-using HellDiver2_API2DB.V1_Objects;
+﻿using HD2_EFDatabase.EntFramework;
+using HD2_EFDatabase.V1_Objects;
 using Newtonsoft.Json;
 
-namespace HellDiver2_API2DB {
+namespace HD2_EFDatabase {
     internal class Program {
-        public static Config? UserConfig { get; private set; } = GetConfig();
-        static void Main() {
+        public static Config? userConfig { get; private set; } = GetConfig();
+        private static void Main() {
             //User Config
-            while (UserConfig == null || UserConfig == new Config()) {
+            while (userConfig == null || userConfig == new Config()) {
                 Console.WriteLine($"[{DateTime.UtcNow}][Info] Empty config has been generated at: {Directory.GetCurrentDirectory()}/Config.json, populate the data before continuing...");
                 Console.ReadLine();
                 Thread.Sleep(10000);
-                UserConfig = GetConfig();
+                userConfig = GetConfig();
             }
+
             //Database Creation Check
-            if (UserConfig.FirstRun) {
+            if (userConfig.FirstRun) {
                 DatabaseBuild();
-                UserConfig.FirstRun = false;
-                DumpConfig(UserConfig);
+                userConfig.FirstRun = false;
+                DumpConfig(userConfig);
             }
 
             //Main Update Loop
             while (true) {
-                Console.WriteLine($"[{DateTime.UtcNow}][Info] New Assignments: {DB_Logic.AddAssignmentData(JsonConvert.DeserializeObject<assignmentData[]>(API.CallAPI(assignmentData.apiEndpoint))!)}");
-                Console.WriteLine($"[{DateTime.UtcNow}][Info] New Planets: {DB_Logic.AddPlanets(JsonConvert.DeserializeObject<Planet[]>(API.CallAPI(Planet.apiEndpoint).Replace(@"""event""",@"""events"""))!)}");
-                Console.WriteLine($"[{DateTime.UtcNow}][Info] New Campaigns: {DB_Logic.AddCampaign2(JsonConvert.DeserializeObject<Campaign2[]>(API.CallAPI(Campaign2.apiEndpoint))!)}");
-                Console.WriteLine($"[{DateTime.UtcNow}][Info] New Dispatches: {DB_Logic.AddDispatch(JsonConvert.DeserializeObject<Dispatch[]>(API.CallAPI(Dispatch.apiEndpoint))!)}");
-                Console.WriteLine($"[{DateTime.UtcNow}][Info] New steamData: {DB_Logic.AddsteamData(JsonConvert.DeserializeObject<steamData[]>(API.CallAPI(steamData.apiEndpoint))!)}");
-                Console.WriteLine($"[{DateTime.UtcNow}][Info] New WarInfo: {DB_Logic.AddWarInfo(JsonConvert.DeserializeObject<WarInfo>(API.CallAPI(WarInfo.apiEndpoint))!)}");
-                Console.WriteLine($"[{DateTime.UtcNow}][Info] Sleeping for: {UserConfig.SleepInterval_ms/1000} seconds");
-                Thread.Sleep(UserConfig.SleepInterval_ms); //Sleep for 10 minutes between updates
+                Console.WriteLine($"[{DateTime.UtcNow}][Info] New Assignments: {DbLogic.AddAssignmentData(JsonConvert.DeserializeObject<assignmentData[]>(Api.GetCallApi(assignmentData.apiEndpoint))!)}");
+                Console.WriteLine($"[{DateTime.UtcNow}][Info] New Planets: {DbLogic.AddPlanets(JsonConvert.DeserializeObject<Planet[]>(Api.GetCallApi(Planet.ApiEndpoint).Replace(@"""event""",@"""events"""))!)}");
+                Console.WriteLine($"[{DateTime.UtcNow}][Info] New Campaigns: {DbLogic.AddCampaign2(JsonConvert.DeserializeObject<Campaign2[]>(Api.GetCallApi(Campaign2.ApiEndpoint))!)}");
+                Console.WriteLine($"[{DateTime.UtcNow}][Info] New Dispatches: {DbLogic.AddDispatch(JsonConvert.DeserializeObject<Dispatch[]>(Api.GetCallApi(Dispatch.ApiEndpoint))!)}");
+                Console.WriteLine($"[{DateTime.UtcNow}][Info] New steamData: {DbLogic.AddsteamData(JsonConvert.DeserializeObject<SteamData[]>(Api.GetCallApi(SteamData.ApiEndpoint))!)}");
+                Console.WriteLine($"[{DateTime.UtcNow}][Info] New WarInfo: {DbLogic.AddWarInfo(JsonConvert.DeserializeObject<WarInfo>(Api.GetCallApi(WarInfo.ApiEndpoint))!)}");
+                Console.WriteLine($"[{DateTime.UtcNow}][Info] Sleeping for: {userConfig.SleepInterval_ms/1000} seconds");
+                Thread.Sleep(userConfig.SleepInterval_ms); //Sleep for 10 minutes between updates
             }
         }
 
@@ -57,17 +58,15 @@ namespace HellDiver2_API2DB {
         }
 
         private static void DatabaseBuild() {
-            if (DB_Logic.DataTableCheck()) {
+            if (DbLogic.DataTableCheck()) {
                 Console.WriteLine($"[{DateTime.UtcNow}][INFO]:First run & DataTables exist");
-                UserConfig!.FirstRun = false;
+                userConfig!.FirstRun = false;
                 return;
             }
-            DB_Logic.GenerateDatabase();
-            if (!DB_Logic.DataTableCheck()) {   //Double check if the tables were properly built
-                Console.WriteLine($"[{DateTime.UtcNow}][ERROR]: Attempted to apply migrations to database, was unsuccessful.");
-            } else {
-                Console.WriteLine($"[{DateTime.UtcNow}][Info]: Applied Migrations automatically.");
-            }
+            DbLogic.GenerateDatabase();
+            Console.WriteLine(!DbLogic.DataTableCheck() //Double check if the tables were properly built
+                ? $"[{DateTime.UtcNow}][ERROR]: Attempted to apply migrations to database, was unsuccessful."
+                : $"[{DateTime.UtcNow}][Info]: Applied Migrations automatically.");
         }
     }
 }

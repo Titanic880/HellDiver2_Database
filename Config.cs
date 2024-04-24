@@ -1,4 +1,4 @@
-﻿namespace HellDiver2_API2DB {
+﻿namespace HD2_EFDatabase {
     internal class Config {
         public int Config_Ver = 3;
         public string API_Contact = "YOURNAMEHERE";
