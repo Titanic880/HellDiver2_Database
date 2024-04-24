@@ -43,7 +43,7 @@ namespace HD2_EFDatabase.EntFramework {
 
         internal static bool AddAssignmentData(assignmentData[] data) {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
                 return false;
             }
 
@@ -95,7 +95,7 @@ namespace HD2_EFDatabase.EntFramework {
 
         internal static bool AddCampaign2(Campaign2[] data) {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
                 return false;
             }
             long[] keys = [
@@ -145,7 +145,7 @@ namespace HD2_EFDatabase.EntFramework {
         }
         internal static bool AddDispatch(Dispatch[] data) {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
                 return false;
             }
             long key = GetNextDispatchKey();
@@ -170,7 +170,7 @@ namespace HD2_EFDatabase.EntFramework {
         }
         internal static bool AddEventData(EventData[] data) {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
                 return false;
             }
             long key = GetNexteventDataKey();
@@ -195,7 +195,7 @@ namespace HD2_EFDatabase.EntFramework {
         }
         internal static bool AddPlanets(Planet[] data){
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
                 return false;
             }
             long[] keys = [
@@ -244,7 +244,7 @@ namespace HD2_EFDatabase.EntFramework {
         }
         internal static bool AddsteamData(SteamData[] data) {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
                 return false;
             }
             long key = GetNextsteamDataKey();
@@ -269,7 +269,7 @@ namespace HD2_EFDatabase.EntFramework {
         }
         internal static bool AddWarInfo(WarInfo data) {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
                 return false;
             }
             long[] keys = [
@@ -296,93 +296,120 @@ namespace HD2_EFDatabase.EntFramework {
         #region KeyValues
         private static long GetNextassignmentKey() {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
                 return -1;
             }
             if (!cont.assignmentDatas.Any()) {
                 return 0;
             }
-            return cont.assignmentDatas.OrderBy(x => x.PK_id).Last().PK_id + 1;
+            return cont.assignmentDatas
+                       .OrderBy(x => x.PK_id)
+                       .Last()
+                       .PK_id + 1;
         }
         private static long GetNextTaskDataKey() {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
                 return -1;
             }
             if (!cont.taskDatas.Any()) {
                 return 0;
             }
-            return cont.taskDatas.OrderBy(x => x.PK_id).Last().PK_id + 1;
+            return cont.taskDatas
+                       .OrderBy(x => x.PK_id)
+                       .Last()
+                       .PK_id + 1;
         }
         private static long GetNextRewardKey() {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
                 return -1;
             }
             if (!cont.rewards.Any()) {
                 return 0;
             }
-            return cont.rewards.OrderBy(x => x.PK_id).Last().PK_id + 1;
+            return cont.rewards
+                       .OrderBy(x => x.PK_id)
+                       .Last()
+                       .PK_id + 1;
         }
         private static long GetNextCampaign2Key() {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
                 return -1;
             }
             if (!cont.campaign2s.Any()) {
                 return 0;
             }
-            return cont.campaign2s.OrderBy(x => x.PK_id).Last().PK_id + 1;
+            return cont.campaign2s
+                       .OrderBy(x => x.PK_id)
+                       .Last()
+                       .PK_id + 1;
         }
         private static long GetNextDispatchKey() {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
                 return -1;
             }
             if (!cont.dispatches.Any()) {
                 return 0;
             }
-            return cont.dispatches.OrderBy(x => x.PK_id).Last().PK_id + 1;
+            return cont.dispatches
+                       .OrderBy(x => x.PK_id)
+                       .Last()
+                       .PK_id + 1;
         }
         private static long GetNextsteamDataKey() {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
                 return -1;
             }
             if (!cont.steamDatas.Any()) {
                 return 0;
             }
-            return cont.steamDatas.OrderBy(x => x.PK_id).Last().PK_id + 1;
+            return cont.steamDatas
+                       .OrderBy(x => x.PK_id)
+                       .Last()
+                       .PK_id + 1;
         }
         private static long GetNexteventDataKey() {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
                 return -1;
             }
             if (!cont.eventDatas.Any()) {
                 return 0;
             }
-            return cont.eventDatas.OrderBy(x => x.PK_id).Last().PK_id + 1;
+            return cont.eventDatas
+                       .OrderBy(x => x.PK_id)
+                       .Last()
+                       .PK_id + 1;
         }
         private static long GetNextStatsKey() {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
                 return -1;
             }
             if (!cont.statistics.Any()) {
                 return 0;
             }
-            return cont.statistics.OrderBy(x => x.PK_id).Last().PK_id + 1;
+            return cont.statistics
+                       .OrderBy(x => x.PK_id)
+                       .Last()
+                       .PK_id + 1;
         }
         private static long GetNextPlanetKey() {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
                 return -1;
             }
             if (!cont.planets.Any()) {
                 return 0;
             }
-            return cont.planets.OrderBy(x=>x.PK_id).Last().PK_id + 1;
+            return cont.planets
+                       .OrderBy(x=>x.PK_id)
+                       .Last()
+                       .PK_id + 1;
         }
         private static long GetNextpositionKey() {
             using DbContext cont = new();
@@ -394,34 +421,44 @@ namespace HD2_EFDatabase.EntFramework {
             }
             return cont.xyPositions
                        .OrderBy(x => x.PK_id)
-                       .Last().PK_id + 1;
+                       .Last()
+                       .PK_id + 1;
         }
         private static long GetNextWarInfoKey() {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
                 return -1;
             }
             if (!cont.warInfos.Any()) {
                 return 0;
             }
-            return cont.warInfos.OrderBy(x => x.PK_id).Last().PK_id + 1;
+            return cont.warInfos
+                       .OrderBy(x => x.PK_id)
+                       .Last()
+                       .PK_id + 1;
         }
         #endregion KeyValues
 
         #region GetValues
         public static EventData? GetEvent(long pkId) {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
 
             }
-            return cont.eventDatas.Where(x => x.PK_id == pkId).OrderBy(x => x.PK_id).LastOrDefault();
+            return cont.eventDatas
+                       .Where(x => x.PK_id == pkId)
+                       .OrderBy(x => x.PK_id)
+                       .LastOrDefault();
         }
         public static Planet? GetPlanet(long pkId) {
             using DbContext cont = new();
-            if (!cont.Database.CanConnect()) {
+            if(cont.Database.CanConnect() is false) {
 
             }
-            return cont.planets.Where(x => x.PK_id == pkId).OrderBy(x => x.PK_id).LastOrDefault();
+            return cont.planets
+                       .Where(x => x.PK_id == pkId)
+                       .OrderBy(x => x.PK_id)
+                       .LastOrDefault();
         }
 
         #endregion GetValues
