@@ -21,7 +21,7 @@ namespace HD2_EFDatabase {
                 DumpConfig(userConfig);
             }
             
-            DateTime start = DateTime.Now;;
+            DateTime start = DateTime.Now;
             //Main Update Loop
             while (true) {
                 Console.WriteLine($"[{DateTime.UtcNow}][Info] New Assignments: {DbLogic.AddAssignmentData(JsonConvert.DeserializeObject<assignmentData[]>(Api.GetCallApi(assignmentData.apiEndpoint))!)}");
