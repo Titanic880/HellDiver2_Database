@@ -1,9 +1,8 @@
-﻿using HellDiver2_API2DB.EntFramework;
-using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using HD2_EFDatabase.EntFramework;
 
-namespace HellDiver2_API2DB.V1_Objects {
-    public class Campaign2 : Database_Record {
+namespace HD2_EFDatabase.V1_Objects {
+    public class Campaign2 : DatabaseRecord {
         public required int id { get; set; }                    //Provided by API
         [ForeignKey("FK_Planet_ID")]
         public required Planet planet { get; set; }
@@ -12,7 +11,7 @@ namespace HellDiver2_API2DB.V1_Objects {
         public required int count { get; set; }
 
         public const bool CanIndex = true;
-        public const string apiEndpoint = "/api/v1/campaigns";
+        public const string ApiEndpoint = "/api/v1/campaigns";
 
         public override bool Equals(object? obj) {
             if(obj is not Campaign2 data) {
@@ -22,20 +21,15 @@ namespace HellDiver2_API2DB.V1_Objects {
             Planet? e1 = planet;
             Planet? e2 = data.planet;
             if (e1 == null && FK_Planet_ID != default) {
-                e1 = DB_Logic.GetPlanet(FK_Planet_ID);
+                e1 = DbLogic.GetPlanet(FK_Planet_ID);
             }
             if(e2 == null && data.FK_Planet_ID != default) {
-                e2 = DB_Logic.GetPlanet(data.FK_Planet_ID);
+                e2 = DbLogic.GetPlanet(data.FK_Planet_ID);
             }
-            if(
-               id == data.id
-            && e1!.index == e2!.index
-            && type == data.type
-            && count == data.count
-            ) {
-                return true;
-            }
-            return false;
+            return id        == data.id
+                && e1!.index == e2!.index
+                && type      == data.type
+                && count     == data.count;
         }
         public override int GetHashCode() {
             return base.GetHashCode();

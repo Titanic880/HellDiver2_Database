@@ -1,9 +1,8 @@
-﻿using HellDiver2_API2DB.raw_Objects;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace HellDiver2_API2DB {
-    public abstract class Database_Record {
+namespace HD2_EFDatabase {
+    public abstract class DatabaseRecord {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long PK_id { get; set; }

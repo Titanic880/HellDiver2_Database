@@ -1,5 +1,5 @@
 ﻿
-namespace HellDiver2_API2DB.raw_Objects {
+namespace HD2_EFDatabase.raw_Objects {
     internal class Campaign {
         public required int id {  get; set; }
         public required int planetIndex { get; set; }
