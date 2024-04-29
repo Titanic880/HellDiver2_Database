@@ -39,10 +39,24 @@ namespace HD2_EFDatabase.V1_Objects {
         /// PK of the parent object
         /// </summary>
         public long FK_Task_ID { get; set; }
+        
         public required int type {  get; set; }
         public required int[] values {  get; set; }
         public required int[] valueTypes {  get; set; }
 
+        /// <summary>
+        /// Example method of how to access values properly
+        /// </summary>
+        /// <param name="valueType"></param>
+        /// <returns></returns>
+        private int GetValueByType(int valueType) {
+            for (int i = 0; i < valueTypes.Length; i++) {
+                if (valueTypes[i] == valueType) {
+                    return values[i];
+                }
+            }
+            return -1;
+        }
         //Still learning about what the values actually are
         private enum TaskValueEn {
             Race = 1,
@@ -55,7 +69,10 @@ namespace HD2_EFDatabase.V1_Objects {
             MajorOrder = 11,
             PlanetIndex = 12
         }
-
+        
+        /// <summary>
+        /// type values
+        /// </summary>
         private enum MajorOrderTypes {
             Eradicate = 3,
             Liberation = 11,

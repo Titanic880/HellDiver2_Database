@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 namespace HD2_EFDatabase {
     internal class Program {
         public static Config? userConfig { get; private set; } = GetConfig();
+        private const string ConfigFile = "Config.json";
         private static void Main() {
             //User Config
             while (userConfig == null || userConfig == new Config()) {
@@ -30,14 +31,15 @@ namespace HD2_EFDatabase {
                 Console.WriteLine($"[{DateTime.UtcNow}][Info] New Dispatches: {DbLogic.AddDispatch(JsonConvert.DeserializeObject<Dispatch[]>(Api.GetCallApi(Dispatch.ApiEndpoint))!)}");
                 Console.WriteLine($"[{DateTime.UtcNow}][Info] New steamData: {DbLogic.AddsteamData(JsonConvert.DeserializeObject<SteamData[]>(Api.GetCallApi(SteamData.ApiEndpoint))!)}");
                 Console.WriteLine($"[{DateTime.UtcNow}][Info] New WarInfo: {DbLogic.AddWarInfo(JsonConvert.DeserializeObject<WarInfo>(Api.GetCallApi(WarInfo.ApiEndpoint))!)}");
-                Console.WriteLine($"[{DateTime.UtcNow}][Info] Sleeping for: {userConfig.SleepInterval_ms/1000} seconds");
-                Thread.Sleep(userConfig.SleepInterval_ms - (DateTime.Now - start).Milliseconds); //Sleep for 10 minutes between updates
+                Console.WriteLine($"[{DateTime.UtcNow}][Info] Sleeping for: ~{(userConfig.SleepInterval_ms - (DateTime.Now - start).TotalMilliseconds) / 1000} seconds");
+                Thread.Sleep((int)Math.Round(userConfig.SleepInterval_ms - (DateTime.Now - start).TotalMilliseconds,0)); //Sleep for 10 minutes between updates
+                start = DateTime.Now;
             }
         }
 
         internal static Config? GetConfig() {
-            if (File.Exists("Config.json")) {
-                Config? ret = JsonConvert.DeserializeObject<Config>(File.ReadAllText("Config.json"));
+            if (File.Exists(ConfigFile)) {
+                Config? ret = JsonConvert.DeserializeObject<Config>(File.ReadAllText(ConfigFile));
                 if (ret == null) {
                     return null;
                 } else if (ret.DefaultVal()) {
@@ -48,14 +50,14 @@ namespace HD2_EFDatabase {
                 }
                 return ret;
             } else {
-                File.Create("Config.json").Close();
-                File.WriteAllText("Config.json", JsonConvert.SerializeObject(new Config(),Formatting.Indented));
+                File.Create(ConfigFile).Close();
+                File.WriteAllText(ConfigFile, JsonConvert.SerializeObject(new Config(),Formatting.Indented));
                 return null;
             }
         }
         private static void DumpConfig(Config conf) {
             conf.Config_Ver = new Config().Config_Ver;
-            File.WriteAllText("Config.json", JsonConvert.SerializeObject(conf,Formatting.Indented));
+            File.WriteAllText(ConfigFile, JsonConvert.SerializeObject(conf,Formatting.Indented));
         }
 
         private static void DatabaseBuild() {

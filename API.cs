@@ -34,9 +34,11 @@ namespace HD2_EFDatabase {
                       , 600000);
                     continue;
                 }
-                
-                if (int.TryParse(res.Headers.GetValues("x-ratelimit-remaining").FirstOrDefault()
-                       ,out _callsLeft) is false) {
+
+                if (!res.Headers.TryGetValues("x-ratelimit-remaining", out IEnumerable<string?> RateLimit)) {
+                    Console.WriteLine($"[{DateTime.UtcNow}][WARNING] x-ratelimit-remaining not found on response");
+                }
+                if (int.TryParse(((string?[])RateLimit)[0],out _callsLeft) is false) {
                     _callsLeft = 1;
                 }
 
@@ -50,13 +52,10 @@ namespace HD2_EFDatabase {
                         LogSleep($"[{DateTime.UtcNow}][WARNING] 429: Sleeping for {wait} seconds", wait * 1000);
                         _callsLeft += 1;
                         continue;
-                    case HttpStatusCode.BadGateway:
-                        LogSleep($"[{DateTime.UtcNow}][ERROR] 502: Sleeping for 10 minutes", ApiSleepTime * 1000);
+                    default:
+                        LogSleep("Unhandled HTTPS response recieved, retry will occour in 5 minutes...",300000);
                         _callsLeft += 1;
                         continue;
-                    case HttpStatusCode.Forbidden:
-                        LogSleep("How...?", 60000);
-                        break;
                 }
             }
         }
